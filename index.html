@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Buoy Parts Book — every part in the Ø200 mm sphere probe, in plain English.
+
+  LIVING (docs/README.md §3). A plain-language reading of the living
+  documents; it holds no figure of its own. Each number's home:
+    hull figures ......... device/enclosure/buoy-description.md
+    parts, prices, gaps .. device/hardware/bom/bom-prod.md, parts.md
+    what is in the drawer  device/hardware/inventory.md
+    nets, pins, addresses  docs/superpowers/specs/2026-08-09-meteo-carrier-pcb-design.md
+    mAh/day, endurance ... docs/analysis/power-budget.md
+    cadence, the mission . docs/superpowers/specs/2026-08-09-scientific-mission-design.md
+  Self-contained: open it in any browser, no network needed except the fonts,
+  which fall back cleanly offline.
+-->
+<title>Buoy Parts Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+  :root {
+    /* cold marine greys, hull-yellow accent */
+    --ground:      #E4E9E8;
+    --surface:     #F4F7F6;
+    --surface-2:   #DCE3E2;
+    --ink:         #14191B;
+    --ink-2:       #4E5C5B;
+    --ink-3:       #7C8A88;
+    --rule:        #C3CDCB;
+    --rule-soft:   #D5DDDB;
+    --accent:      #C99109;
+    --accent-hi:   #E8B21E;
+    --have:        #2C6B52;
+    --have-bg:     #D3E3DA;
+    --order:       #2F5872;
+    --order-bg:    #D3DFE7;
+    --buy:         #A8431D;
+    --buy-bg:      #EDDACF;
+
+    --measure: 67ch;
+    --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --f-mono: "IBM Plex Mono", "Consolas", "Courier New", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:    #0F1416;
+      --surface:   #161D1F;
+      --surface-2: #1F282A;
+      --ink:       #E3E9E7;
+      --ink-2:     #9DABA9;
+      --ink-3:     #74827F;
+      --rule:      #2B3639;
+      --rule-soft: #222C2E;
+      --accent:    #E8B21E;
+      --accent-hi: #F2C64C;
+      --have:      #6FBE96;
+      --have-bg:   #1B3229;
+      --order:     #7FB2D4;
+      --order-bg:  #172A36;
+      --buy:       #E08E62;
+      --buy-bg:    #332016;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:    #0F1416;
+    --surface:   #161D1F;
+    --surface-2: #1F282A;
+    --ink:       #E3E9E7;
+    --ink-2:     #9DABA9;
+    --ink-3:     #74827F;
+    --rule:      #2B3639;
+    --rule-soft: #222C2E;
+    --accent:    #E8B21E;
+    --accent-hi: #F2C64C;
+    --have:      #6FBE96;
+    --have-bg:   #1B3229;
+    --order:     #7FB2D4;
+    --order-bg:  #172A36;
+    --buy:       #E08E62;
+    --buy-bg:    #332016;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet { max-width: 1000px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    display: flex; flex-direction: column; gap: 14px;
+    padding: 56px 0 28px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 11.5px; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--ink-3); margin: 0;
+  }
+
+  h1 {
+    font-family: var(--f-display); font-weight: 700;
+    font-size: clamp(38px, 7vw, 62px); line-height: 0.98;
+    letter-spacing: -0.025em; margin: 0; text-wrap: balance;
+  }
+  h1 .mark { color: var(--accent); }
+
+  .standfirst {
+    max-width: var(--measure); margin: 0;
+    font-size: 19px; line-height: 1.55; color: var(--ink-2);
+  }
+
+  .facts {
+    display: flex; flex-wrap: wrap; gap: 6px 28px;
+    font-family: var(--f-mono); font-size: 12px; color: var(--ink-2);
+    font-variant-numeric: tabular-nums; padding-top: 4px;
+  }
+  .facts b { color: var(--ink); font-weight: 500; }
+
+  /* ---------- what differs on the land stations ---------- */
+
+  .variants { padding: 26px 0 22px; border-bottom: 1px solid var(--rule); }
+  .variants .frame { overflow-x: auto; }
+  .variants h2 {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--ink-3); margin: 0 0 4px; font-weight: 500;
+  }
+  .variants .intro { max-width: var(--measure); margin: 0 0 14px; font-size: 14.5px; color: var(--ink-2); }
+  .variants .outro { max-width: var(--measure); margin: 14px 0 0; font-size: 14.5px; color: var(--ink-2); }
+  table.pins td.was { color: var(--ink); }
+
+  /* ---------- cutaway figure ---------- */
+
+  figure.cutaway { margin: 0; padding: 34px 0 26px; border-bottom: 1px solid var(--rule); }
+  .cutaway .frame { overflow-x: auto; }
+  .cutaway svg { display: block; width: 100%; min-width: 480px; height: auto; }
+  .cutaway figcaption {
+    max-width: var(--measure); font-size: 14.5px; color: var(--ink-2); padding-top: 14px;
+  }
+
+  /* ---------- the power and data schema ---------- */
+
+  .schema { padding: 32px 0 28px; border-bottom: 1px solid var(--rule); }
+  .schema > h2 { font-size: 27px; line-height: 1.15; margin: 0 0 10px; letter-spacing: -0.012em; }
+  .schema .intro { max-width: var(--measure); margin: 0 0 6px; font-size: 15.5px; line-height: 1.6; color: var(--ink-2); }
+  .schema figure { margin: 20px 0 0; }
+  .schema .frame { overflow-x: auto; }
+  .schema svg { display: block; width: 100%; min-width: 860px; height: auto; }
+  .schema figcaption { max-width: var(--measure); font-size: 14.5px; line-height: 1.6; color: var(--ink-2); padding-top: 14px; }
+  .schema .note { max-width: var(--measure); font-size: 14.5px; line-height: 1.6; color: var(--ink-2); margin: 14px 0 0; }
+  .schema .pinmap { margin-top: 26px; }
+  .schema table.pins { min-width: 700px; }
+  .schema table.pins span.net {
+    font-family: var(--f-mono); font-size: 12px; color: var(--accent);
+    white-space: nowrap;
+  }
+  .schema table.pins td.pin { white-space: normal; }
+
+  .svg-label { font-family: var(--f-display); font-size: 12px; font-weight: 600; fill: var(--ink); }
+  .svg-sub   { font-family: var(--f-mono); font-size: 10.5px; fill: var(--ink-3); }
+  .svg-dim   { font-family: var(--f-mono); font-size: 10.5px; fill: var(--ink-3); }
+
+  /* ---------- pin map ---------- */
+
+  .pinmap { margin: 22px 0 4px; }
+  .pinmap-title {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--ink-3); margin: 0 0 10px;
+  }
+  .pinmap .frame { overflow-x: auto; }
+  table.pins { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 13.5px; }
+  table.pins th {
+    text-align: left; font-family: var(--f-mono); font-weight: 500;
+    font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-3); padding: 0 14px 7px 0; border-bottom: 1px solid var(--rule);
+  }
+  table.pins td {
+    padding: 7px 14px 7px 0; border-bottom: 1px solid var(--rule-soft);
+    color: var(--ink-2); vertical-align: top;
+  }
+  table.pins td.pin, table.pins td.net {
+    font-family: var(--f-mono); font-size: 12.5px; color: var(--ink);
+    white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  table.pins td.net { color: var(--accent); }
+
+  /* ---------- groups ---------- */
+
+  .group { padding: 46px 0 8px; border-bottom: 1px solid var(--rule); }
+  .group:last-of-type { border-bottom: none; }
+
+  .group-head {
+    display: grid; grid-template-columns: 62px minmax(0, 1fr);
+    gap: 0 22px; align-items: start; margin-bottom: 28px;
+  }
+
+  .group-tag {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em;
+    color: var(--accent); text-transform: uppercase;
+    padding-top: 9px; border-top: 2px solid var(--accent);
+  }
+
+  .group-head h2 {
+    font-family: var(--f-display); font-weight: 700;
+    font-size: clamp(24px, 3.4vw, 31px); letter-spacing: -0.018em;
+    line-height: 1.1; margin: 0 0 8px; text-wrap: balance;
+  }
+
+  .group-head p { max-width: var(--measure); margin: 0 0 10px; color: var(--ink-2); font-size: 16.5px; }
+  .group-head p:last-child { margin-bottom: 0; }
+
+  /* ---------- part rows ---------- */
+
+  .parts { display: flex; flex-direction: column; }
+
+  .part {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr);
+    gap: 8px 26px; padding: 20px 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .part:first-child { border-top: 1px solid var(--rule); }
+
+  .part-id { display: flex; flex-direction: column; gap: 6px; }
+
+  .part-name {
+    font-family: var(--f-display); font-weight: 600;
+    font-size: 15.5px; line-height: 1.25; color: var(--ink);
+  }
+
+  .part-pn {
+    font-family: var(--f-mono); font-size: 11px;
+    color: var(--ink-3); line-height: 1.45; word-break: break-word;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; padding-top: 1px; }
+
+  .chip {
+    font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.03em;
+    padding: 2px 7px; border-radius: 3px; white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .chip.have  { background: var(--have-bg);  color: var(--have); }
+  .chip.order { background: var(--order-bg); color: var(--order); }
+  .chip.buy   { background: var(--buy-bg);   color: var(--buy); }
+  .chip.qty   { background: var(--surface-2); color: var(--ink-2); }
+
+  .part-body { max-width: 64ch; }
+
+  .wire {
+    font-family: var(--f-mono); font-size: 11.5px; line-height: 1.5;
+    color: var(--ink-2); background: var(--surface);
+    border-left: 2px solid var(--accent);
+    padding: 5px 10px; margin: 0 0 11px;
+    overflow-x: auto; white-space: nowrap;
+  }
+
+  .part-body p { margin: 0 0 10px; font-size: 16px; }
+  .part-body p:last-child { margin-bottom: 0; }
+  .part-body .why { color: var(--ink-2); }
+  .part-body b { font-weight: 600; }
+
+  /* ---------- closing ---------- */
+
+  .closing {
+    margin-top: 48px; background: var(--surface);
+    border-left: 3px solid var(--accent); padding: 26px 28px;
+  }
+  .closing h2 {
+    font-family: var(--f-display); font-size: 19px; font-weight: 700;
+    letter-spacing: -0.01em; margin: 0 0 12px;
+  }
+  .closing p { max-width: var(--measure); margin: 0 0 12px; font-size: 16px; color: var(--ink-2); }
+  .closing p:last-child { margin-bottom: 0; }
+  .closing code {
+    font-family: var(--f-mono); font-size: 13px; color: var(--ink);
+    background: var(--surface-2); padding: 1px 5px; border-radius: 3px;
+  }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
+    padding: 20px 0 0; font-family: var(--f-mono); font-size: 11px; color: var(--ink-3);
+  }
+
+  @media (max-width: 760px) {
+    .sheet { padding: 0 18px 72px; }
+    .group-head { grid-template-columns: 1fr; gap: 10px; }
+    .group-tag { border-top: none; padding-top: 0; }
+    .part { grid-template-columns: 1fr; gap: 10px; padding: 20px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead">
+    <p class="eyebrow">sphere200g_p123 &nbsp;·&nbsp; SEA — the Drake Passage drifter</p>
+    <h1>Buoy <span class="mark">Parts</span> Book</h1>
+    <p class="standfirst">Every part in the Ø200 mm printed sphere — what it is, how it is wired, and why it is done that way rather than the obvious way. <b>This describes SEA, the drifting buoy released mid-Drake Passage</b>, which carries everything the design has. LAND-1 and LAND-2 are the same probe built to the same drawings; the table below is the complete list of what they leave out or do differently, and nothing after it repeats the distinction.</p>
+    <div class="facts">
+      <span><b>7</b> printed parts</span>
+      <span><b>660 g</b> of filament</span>
+      <span><b>21 Ah</b> of battery</span>
+      <span><b>~79 mAh</b> a day, typical</span>
+      <span><b>4</b> messages a day</span>
+    </div>
+  </header>
+
+  <section class="variants">
+    <h2>What differs on LAND-1 and LAND-2</h2>
+    <p class="intro">Two land stations beside reference series on King George Island, each the other's backup. Same hull, same carrier, same sensors, same pin map, same battery and the same solar crown — the differences are the keel, the schedule and what the two temperature channels are pointed at.</p>
+    <div class="frame">
+      <table class="pins">
+        <thead><tr><th>&nbsp;</th><th>SEA — described in this book</th><th>LAND-1 / LAND-2</th></tr></thead>
+        <tbody>
+          <tr><td class="was">Keel</td><td>530 g steel ballast in a printed collar under a bolted lid</td><td>omitted — the station is bolted to a bracket instead</td></tr>
+          <tr><td class="was">Drogue</td><td>sea anchor on a line below the hull</td><td>none</td></tr>
+          <tr><td class="was">Internal screws</td><td>15</td><td>11 — the ballast lid's four are not needed</td></tr>
+          <tr><td class="was">Transmit</td><td>4× a day, 00/06/12/18 UTC</td><td>1× a day</td></tr>
+          <tr><td class="was">GPS fix</td><td>every 2 h — the track is the measurement</td><td>once a day, for the clock only</td></tr>
+          <tr><td class="was">Message</td><td>schema 3, 77 bytes</td><td>schema 2, 189 bytes</td></tr>
+          <tr><td class="was">Energy</td><td>~48 / ~79 / ~151 mAh a day</td><td>~20 mAh a day</td></tr>
+          <tr><td class="was">DS18B20 probe</td><td>same part, same pocket — reads <b>water</b> along the track</td><td>same part, same pocket — reads <b>ground</b> or snow</td></tr>
+          <tr><td class="was">BME280 humidity</td><td>sealed inside: a condensation canary</td><td>real outside air, so the station needs a radiation shield</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="outro">Everything else in this book is the same part, in the same place, wired the same way.</p>
+  </section>
+
+  <figure class="cutaway">
+    <div class="frame">
+      <svg viewBox="0 0 500 300" role="img" aria-label="Scale cutaway of the 200 mm sphere buoy: Iridium antenna out through the cap gland at z +88, membrane vent at z +65, three solar pockets at z +51.5, the equator flange at z 0, the main platform at z -27 to -30, six 18650 cells lying across the battery platform at z -53, and the steel ballast at z -78.">
+        <!-- hull: 1 px = 1 mm, y = 160 - z, so the equator is y 160 -->
+        <circle cx="125" cy="160" r="100" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.5"/>
+
+        <!-- cap face, z +88 -->
+        <line x1="77.5" y1="72" x2="172.5" y2="72" stroke="var(--rule)" stroke-width="1.5"/>
+
+        <!-- Iridium antenna, 19 x 49, top at z +108, through the gland at +88..+82 -->
+        <rect x="115.5" y="52" width="19" height="49" rx="6" fill="var(--ink)"/>
+        <rect x="108" y="72" width="34" height="6" rx="1" fill="var(--accent)"/>
+
+        <!-- membrane vent bore, z +65, on the right ridge flat -->
+        <circle cx="198" cy="95" r="5.5" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>
+        <circle cx="198" cy="95" r="1.8" fill="var(--ink-3)"/>
+
+        <!-- two of the three P123 pockets, flat panels seated in the crown -->
+        <polygon points="57,89 31,131 35.3,133.6 61.3,91.6" fill="var(--accent-hi)" stroke="var(--ink)" stroke-width="1.1"/>
+        <polygon points="199,105 217,134 212.7,136.6 194.7,107.6" fill="var(--accent-hi)" stroke="var(--ink)" stroke-width="1.1"/>
+
+        <!-- equator flange, z 0 -->
+        <line x1="14" y1="160" x2="236" y2="160" stroke="var(--ink)" stroke-width="1.4" stroke-dasharray="1 5" stroke-linecap="round"/>
+        <circle cx="27" cy="160" r="3.2" fill="var(--ink)"/>
+        <circle cx="223" cy="160" r="3.2" fill="var(--ink)"/>
+
+        <!-- the dry bay: RockBLOCK, carrier PCB and modules, z -2 to -12 -->
+        <rect x="85" y="162" width="80" height="10" rx="1.5" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.2"/>
+
+        <!-- main platform, z -27.4 to -30.4, 120 wide -->
+        <rect x="65" y="187.4" width="120" height="3" fill="var(--ink)"/>
+
+        <!-- 3 mm foam pad bonded under it, then the cells 3.9 mm below -->
+        <rect x="72" y="190.6" width="106" height="3" fill="var(--rule)"/>
+
+        <!-- six 18650 lying across, dia 18, centres z -43.6, 21 mm pitch -->
+        <g fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.2">
+          <circle cx="72.5" cy="203.6" r="9"/>
+          <circle cx="93.5" cy="203.6" r="9"/>
+          <circle cx="114.5" cy="203.6" r="9"/>
+          <circle cx="135.5" cy="203.6" r="9"/>
+          <circle cx="156.5" cy="203.6" r="9"/>
+          <circle cx="177.5" cy="203.6" r="9"/>
+        </g>
+
+        <!-- battery platform top, z -53.4 -->
+        <rect x="70" y="213.4" width="110" height="4" fill="var(--ink)"/>
+
+        <!-- steel ballast, 76.5 dia x 16.2, centred z -77.6, on the cavity floor -->
+        <rect x="86.8" y="229.5" width="76.5" height="16.2" rx="1.5" fill="var(--ink-2)"/>
+        <rect x="96.8" y="225.8" width="56.5" height="4" rx="1" fill="var(--ink-3)"/>
+
+        <!-- cavity floor, z -86, dia 89.7 -->
+        <line x1="80.2" y1="246" x2="169.8" y2="246" stroke="var(--ink-3)" stroke-width="1.4"/>
+
+        <!-- leaders -->
+        <g fill="none" stroke="var(--rule)" stroke-width="1.2">
+          <path d="M136,70 L250,64"/>
+          <path d="M204,95 L228,98 L250,98"/>
+          <path d="M215,132 L236,130 L250,130"/>
+          <path d="M228,160 L242,162 L250,162"/>
+          <path d="M186,189 L232,194 L250,194"/>
+          <path d="M187,204 L230,226 L250,226"/>
+          <path d="M164,238 L226,258 L250,258"/>
+        </g>
+
+        <!-- labels -->
+        <g>
+          <text class="svg-label" x="258" y="64">Iridium antenna</text>
+          <text class="svg-sub" x="258" y="76">Ø19 × 49, out through the cap gland</text>
+
+          <text class="svg-label" x="258" y="98">Pressure vent</text>
+          <text class="svg-sub" x="258" y="110">bore at z +65, on a ridge flat</text>
+
+          <text class="svg-label" x="258" y="130">Solar crown — 3 pockets</text>
+          <text class="svg-sub" x="258" y="142">Voltaic P123, 66 × 66, at z +51.5</text>
+
+          <text class="svg-label" x="258" y="162">Equator flange, z 0</text>
+          <text class="svg-sub" x="258" y="174">bonded, then clamped by 8 × M5</text>
+
+          <text class="svg-label" x="258" y="194">Main platform, z −27 to −30</text>
+          <text class="svg-sub" x="258" y="206">the dry bay above it: modem, carrier</text>
+
+          <text class="svg-label" x="258" y="226">Battery platform, z −53</text>
+          <text class="svg-sub" x="258" y="238">6 × 18650 lying across, 21 mm pitch</text>
+
+          <text class="svg-label" x="258" y="258">Steel ballast, z −78</text>
+          <text class="svg-sub" x="258" y="270">530 g keel on the cavity floor</text>
+        </g>
+
+        <!-- overall dimension -->
+        <g stroke="var(--ink-3)" stroke-width="1">
+          <line x1="25" y1="282" x2="225" y2="282"/>
+          <line x1="25" y1="276" x2="25" y2="288"/>
+          <line x1="225" y1="276" x2="225" y2="288"/>
+        </g>
+        <rect x="94" y="274" width="62" height="16" fill="var(--ground)"/>
+        <text class="svg-dim" x="125" y="286" text-anchor="middle">Ø200 mm</text>
+      </svg>
+    </div>
+    <figcaption>Drawn to scale, <b>z in mm from the equator</b> — the hull spec's own datum. Almost everything lives below the waterline: the electronics deck sits 27 mm down, the cells lie on their sides another 16 mm below that, and the steel disc is on the cavity floor. That distribution is the whole reason a floating sphere turns its solar panels back toward the sky instead of drifting upside down.</figcaption>
+  </figure>
+
+  <!-- ============ THE SCHEMA ============ -->
+  <section class="schema">
+    <h2>How it all connects</h2>
+    <p class="intro">Sun charges a pack; the pack feeds one always-on 3.3 V rail; the two hungry parts get switched rails of their own. Everything else is signalling — two I²C buses, one serial link to the modem, one 1-Wire line and two gated analogue dividers. The drawing is the power; the table under it is every part, including the data.</p>
+
+    <figure>
+      <div class="frame">
+        <svg viewBox="0 0 1000 470" role="img" aria-label="Power schema: three solar panels through Schottky diodes on a combiner board feed the charger, which charges a six-cell 18650 pack through a 1.5 A fuse. VBAT branches twice: up through load switch U3, gated by IO26, to the RockBLOCK modem on pin 8; and through polyfuse F1 and the MCP1700 LDO to the always-on 3.3 V rail, which feeds the ESP32, BME280, BMP581, MAX17048, DS18B20 and load switch U2, gated by IO25, which feeds the SAM-M8Q GPS.">
+
+          <!-- ============ harvest ============ -->
+          <rect x="30"  y="20" width="80" height="24" rx="2" fill="var(--accent-hi)" stroke="var(--ink)" stroke-width="1.2"/>
+          <rect x="128" y="20" width="80" height="24" rx="2" fill="var(--accent-hi)" stroke="var(--ink)" stroke-width="1.2"/>
+          <rect x="226" y="20" width="80" height="24" rx="2" fill="var(--accent-hi)" stroke="var(--ink)" stroke-width="1.2"/>
+          <text class="svg-label" x="70"  y="37" text-anchor="middle">P123</text>
+          <text class="svg-label" x="168" y="37" text-anchor="middle">P123</text>
+          <text class="svg-label" x="264" y="37" text-anchor="middle">P123</text>
+
+          <g stroke="var(--accent)" stroke-width="2" fill="none">
+            <path d="M70,44 L70,58"/><path d="M168,44 L168,58"/><path d="M264,44 L264,58"/>
+            <path d="M70,74 L70,82 L264,82 L264,74"/><path d="M168,74 L168,82"/>
+            <path d="M168,82 L168,100"/>
+          </g>
+          <g fill="var(--ink)" stroke="var(--ink)" stroke-width="1.4">
+            <polygon points="63,58 77,58 70,69"/><polygon points="161,58 175,58 168,69"/><polygon points="257,58 271,58 264,69"/>
+            <path d="M63,71 L77,71"/><path d="M161,71 L175,71"/><path d="M257,71 L271,71"/>
+          </g>
+          <rect x="22" y="50" width="292" height="40" rx="3" fill="none" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+          <text class="svg-sub" x="22" y="12">solar combiner, upper shell · 3 × 1N5817 · one JST-XH crosses the equator</text>
+
+          <!-- ============ charger + pack ============ -->
+          <rect x="100" y="100" width="180" height="54" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
+          <text class="svg-label" x="190" y="118" text-anchor="middle">Solar charger</text>
+          <text class="svg-sub"   x="190" y="133" text-anchor="middle">bq25185 · Adafruit #6106</text>
+          <text class="svg-sub"   x="190" y="148" text-anchor="middle">charge + power path</text>
+
+          <path d="M190,154 L190,182" stroke="var(--accent)" stroke-width="2.4" fill="none"/>
+          <rect x="166" y="182" width="48" height="18" rx="2" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.2"/>
+          <text class="svg-sub" x="190" y="195" text-anchor="middle">1.5 A</text>
+          <path d="M190,200 L190,214" stroke="var(--accent)" stroke-width="2.4" fill="none"/>
+
+          <rect x="100" y="214" width="180" height="46" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
+          <text class="svg-label" x="190" y="235" text-anchor="middle">6 × 18650 — 21 Ah</text>
+          <text class="svg-sub"   x="190" y="251" text-anchor="middle">3.0–4.2 V, six in parallel</text>
+
+          <!-- ============ the VBAT spine ============ -->
+          <g stroke="var(--accent)" stroke-width="2.4" fill="none">
+            <path d="M280,127 L340,127"/>
+            <path d="M340,60 L340,155"/>
+            <path d="M340,60 L392,60"/>
+            <path d="M340,155 L392,155"/>
+          </g>
+          <text class="svg-sub" x="308" y="120" text-anchor="middle">VBAT</text>
+
+          <!-- ---- modem branch ---- -->
+          <rect x="392" y="44" width="132" height="32" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4"/>
+          <text class="svg-label" x="458" y="64" text-anchor="middle">U3 TPS22918</text>
+          <text class="svg-sub"   x="458" y="90" text-anchor="middle">ON = IO26</text>
+          <path d="M524,60 L574,60" stroke="var(--accent)" stroke-width="2.4" fill="none"/>
+
+          <rect x="574" y="34" width="168" height="52" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
+          <text class="svg-label" x="658" y="55" text-anchor="middle">RockBLOCK 9603</text>
+          <text class="svg-sub"   x="658" y="72" text-anchor="middle">pin 8 · 3.0–5.4 V · 470 mA</text>
+
+          <path d="M658,34 L658,16" stroke="var(--ink)" stroke-width="1.6" fill="none"/>
+          <path d="M650,16 L666,16 M652,11 L664,11 M654,6 L662,6" stroke="var(--ink)" stroke-width="1.6" fill="none"/>
+          <text class="svg-sub" x="678" y="14">helical antenna · SMA coax</text>
+
+          <!-- ---- always-on branch ---- -->
+          <rect x="392" y="142" width="72" height="26" rx="3" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.2"/>
+          <text class="svg-sub" x="428" y="159" text-anchor="middle">F1 1.1 A</text>
+          <path d="M464,155 L504,155" stroke="var(--accent)" stroke-width="2.4" fill="none"/>
+
+          <rect x="504" y="135" width="132" height="40" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
+          <text class="svg-label" x="570" y="152" text-anchor="middle">MCP1700 LDO</text>
+          <text class="svg-sub"   x="570" y="168" text-anchor="middle">3.3 V · 1.6 µA idle</text>
+
+          <path d="M636,155 L668,155" stroke="var(--ink-2)" stroke-width="2.2" fill="none"/>
+          <rect x="668" y="147" width="26" height="16" rx="2" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.1"/>
+          <text class="svg-sub" x="681" y="159" text-anchor="middle">JP1</text>
+
+          <!-- ---- the 3V3 bus and its loads ---- -->
+          <g stroke="var(--ink-2)" stroke-width="2.2" fill="none">
+            <path d="M694,155 L722,155 L722,381"/>
+            <path d="M722,177 L748,177"/><path d="M722,219 L748,219"/><path d="M722,259 L748,259"/>
+            <path d="M722,299 L748,299"/><path d="M722,339 L748,339"/><path d="M722,381 L748,381"/>
+          </g>
+          <text class="svg-sub" x="726" y="142">3V3 — always on</text>
+
+          <g fill="var(--surface)" stroke="var(--ink)" stroke-width="1.4">
+            <rect x="748" y="160" width="196" height="34" rx="3"/>
+            <rect x="748" y="204" width="196" height="30" rx="3"/>
+            <rect x="748" y="244" width="196" height="30" rx="3"/>
+            <rect x="748" y="284" width="196" height="30" rx="3"/>
+            <rect x="748" y="324" width="196" height="30" rx="3"/>
+            <rect x="748" y="366" width="196" height="30" rx="3"/>
+            <rect x="748" y="420" width="196" height="30" rx="3"/>
+          </g>
+          <text class="svg-label" x="846" y="181" text-anchor="middle">FireBeetle ESP32</text>
+          <text class="svg-label" x="846" y="224" text-anchor="middle">BME280 · 0x77</text>
+          <text class="svg-label" x="846" y="264" text-anchor="middle">BMP581 · 0x47</text>
+          <text class="svg-label" x="846" y="304" text-anchor="middle">MAX17048 · 0x36</text>
+          <text class="svg-label" x="846" y="344" text-anchor="middle">DS18B20 · 1-Wire</text>
+          <text class="svg-label" x="846" y="386" text-anchor="middle">U2 TPS22918</text>
+          <text class="svg-label" x="846" y="440" text-anchor="middle">SAM-M8Q GPS</text>
+
+          <path d="M846,396 L846,420" stroke="var(--ink-2)" stroke-width="2.2" fill="none"/>
+          <text class="svg-sub" x="856" y="412">ON = IO25</text>
+
+          <!-- ============ legend ============ -->
+          <g>
+            <path d="M30,300 L58,300" stroke="var(--accent)" stroke-width="2.4"/>
+            <text class="svg-sub" x="64" y="304">battery-side power</text>
+            <path d="M30,320 L58,320" stroke="var(--ink-2)" stroke-width="2.2"/>
+            <text class="svg-sub" x="64" y="324">the 3.3 V rail</text>
+            <text class="svg-sub" x="30" y="348">JP1 and JP2 are shunt jumpers — pull one</text>
+            <text class="svg-sub" x="30" y="362">and a meter goes in series with that rail.</text>
+            <text class="svg-sub" x="30" y="390">The modem rail taps VBAT <tspan font-style="italic">before</tspan> F1: a</text>
+            <text class="svg-sub" x="30" y="404">polyfuse&#39;s resistance would eat the margin</text>
+            <text class="svg-sub" x="30" y="418">against the modem&#39;s 3.0 V minimum. JP2</text>
+            <text class="svg-sub" x="30" y="432">sits in that rail, between U3 and the plug.</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Two rails leave the pack. <b>VBAT</b> goes straight to the modem through its own switch; everything else comes off the <b>3.3 V</b> rail behind the LDO. Nothing on the 3.3 V rail is ever switched except the GPS — the three sensors idle in microamps and are cheaper to leave on than to gate.</figcaption>
+    </figure>
+
+    <div class="pinmap">
+      <p class="pinmap-title">Every part — what powers it, what talks to it</p>
+      <div class="frame">
+        <table class="pins">
+          <thead><tr><th>Part</th><th>Power</th><th>Data</th><th>Pins on the MCU</th></tr></thead>
+          <tbody>
+            <tr><td class="pin">Solar panels ×3</td><td>source — 6 V, 110 mA each</td><td>—</td><td>—</td></tr>
+            <tr><td class="pin">Charger</td><td>panels in, pack and <span class="net">VBAT</span> out</td><td>—</td><td>off-board: BATT+ and GND to J5, nothing else</td></tr>
+            <tr><td class="pin">FireBeetle ESP32</td><td><span class="net">3V3</span>, always on</td><td>it <i>is</i> the bus master</td><td>every pin below is its own</td></tr>
+            <tr><td class="pin">BME280</td><td><span class="net">3V3</span> via Qwiic QW1</td><td>I²C0, 0x77</td><td>IO21 <span class="net">SDA0</span> / IO22 <span class="net">SCL0</span></td></tr>
+            <tr><td class="pin">BMP581</td><td><span class="net">3V3</span> via SOCK_BARO</td><td>I²C0, 0x47</td><td>IO21 / IO22, the same pair</td></tr>
+            <tr><td class="pin">MAX17048</td><td><span class="net">3V3</span> via Qwiic QW1</td><td>I²C0, 0x36</td><td>IO21 / IO22 — it watches the pack, not the rail it runs on</td></tr>
+            <tr><td class="pin">SAM-M8Q GPS</td><td><span class="net">3V3_GPS</span> — switched by U2</td><td>I²C1, <b>its own bus</b></td><td>IO25 gates U2; IO18 <span class="net">SDA1</span> / IO19 <span class="net">SCL1</span></td></tr>
+            <tr><td class="pin">RockBLOCK 9603</td><td><span class="net">VBAT_RB_SW</span> — switched by U3, tapped before F1</td><td>UART, plus its own sleep pin</td><td>IO26 gates U3; IO16 <span class="net">RB_TX</span> / IO17 <span class="net">RB_RX</span>; IO14 <span class="net">RB_ONOFF</span></td></tr>
+            <tr><td class="pin">DS18B20 probe</td><td><span class="net">3V3</span> via J8, 4.7 kΩ pull-up</td><td>1-Wire — data and clock share one line</td><td>IO4 <span class="net">OW_DATA</span></td></tr>
+            <tr><td class="pin">NTC — carrier leg</td><td>none at rest: excited only for the read</td><td>analogue divider</td><td>IO13 <span class="net">SENSE_EXC</span> → J7 → IO34 <span class="net">NTC_SENSE</span></td></tr>
+            <tr><td class="pin">NTC — charger leg</td><td>the charger&#39;s own TS pin</td><td>none — it gates in hardware</td><td>not on the carrier at all</td></tr>
+            <tr><td class="pin">Leak pads</td><td>none at rest: same IO13 excitation</td><td>analogue, 100 kΩ + 100 nF</td><td>IO13 → R5 → IO35 <span class="net">LEAK_SENSE</span>, J9</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="note"><b>Three things in that table are the whole argument of the design.</b> The GPS has <i>its own I²C bus</i>, because leaving it on the shared one and cutting its rail backfeeds about 2 mA through its protection diodes. Both load switches carry a <b>100 kΩ pull-down</b> (R1, R2), so a rail cannot come up while the ESP32 boots and its pins are undefined. And the two analogue dividers are <b>excited by IO13</b> rather than wired across the battery, so at rest they draw nothing at all.</p>
+    <p class="note">The nets in this table are the contract, not a description of it: they are the column headings of <code>device/hardware/carrier/connection-table.csv</code>, which is what the board is fabricated from.</p>
+  </section>
+
+  <!-- ============ 1. BRAIN ============ -->
+  <section class="group">
+    <div class="group-head">
+      <div class="group-tag">01</div>
+      <div>
+        <h2>The brain</h2>
+        <p>One small computer runs the whole probe, and it spends almost all its life asleep. It wakes for about three seconds every hour, reads the sensors, appends the result to a buffer that survives sleep, and goes back down. Four times a day, at 00/06/12/18 UTC, it wakes for longer and sends the buffer.</p>
+        <p>Sleeping is not an optimisation, it is the design. Awake the ESP32 draws about 50 mA; asleep it draws microamps, and all twenty-four hourly wakes together cost about <b>1 mAh a day</b> — next to nothing.</p>
+        <p><b>The buoy spends ~48 best / ~79 typical / ~151 degraded mAh a day</b> — a band rather than a number, because nobody has yet measured how long a satellite session takes in Southern Ocean swell. The modem is around 80 % of that bill and everything else is rounding.</p>
+      </div>
+    </div>
+    <div class="parts">
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">FireBeetle 2 ESP32-E</span>
+          <span class="part-pn">DFRobot DFR0654-F<br>ESP-WROOM-32E</span>
+          <span class="chips"><span class="chip have">owned 3</span><span class="chip qty">1 per probe</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">socketed on the carrier · Low Power Pad cut · ~3 s wake ×24/day · RTC RAM buffers 5 days</p>
+          <p>The microcontroller — the same ESP32 silicon as an $8 dev board, on a carrier built for low power. It has to reach <b>~12–23 µA in deep sleep</b>, and every endurance figure in this book assumes it does. A plain DevKit idles in the milliamps and would empty the pack before the season ended, which is why no probe carries one.</p>
+          <p class="why"><b>Every deployed board has its "Low Power Pad" cut.</b> Uncut, that pad feeds an onboard RGB status LED idling at ~500 µA, which holds the whole always-on rail at ~534 µA — <b>~12.8 mAh a day, larger than the GPS fix and all twenty-four hourly wakes combined</b>. Inside a sealed opaque hull nobody can ever see that LED. Cut, the rail sits at ~26–37 µA, under 1 mAh a day. A board that reaches a probe uncut is not built to specification.</p>
+          <p class="why"><b>The board is built to one configuration:</b> pad cut, socketed, and carrying the same firmware image as its two siblings. There is no spare board anywhere in the project, so any of the three has to be able to replace any other in the field without a rebuild.</p>
+          <p class="why"><b>The cut is irreversible, so the µA meter is a precondition, not a follow-up.</b> The bench INA219 resolves to about ±0.4 mA and a cut board should draw 26–37 µA — a tenth of that instrument's own noise, so it reads the same whether the board draws 20 µA or 300. A board cut before the µA meter arrives therefore cannot be confirmed either way, and the cut cannot be undone to try again. The order is fixed: cut one board, measure it, then cut the other two — a bad result costs one board rather than three (backlog FW-08).</p>
+          <p class="why">Readings live in RTC RAM — a small block of memory that stays powered through deep sleep — so nothing is lost between wakes, and the buffer has to hold about five days of readings against a run of failed satellite passes. The board is socketed, never soldered, so a dead one can be swapped without touching the carrier.</p>
+          <p class="why"><b>The carrier is laid out around this module's pin list</b>, which is the most restrictive of the sockets the board has to serve. IO32/IO33 are not broken out at all; IO0/2/12/15 are strapping pins the chip samples at boot and so cannot be driven; IO1/3 are the USB console. Every allocation fits what is left — which is why the two rail gates sit on IO25/IO26 (present on every candidate, survive deep sleep, not strapping) and why both analogue sense jobs sit on input-only ADC1 pins.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Carrier PCB</span>
+          <span class="part-pn">meteo-carrier, rev. 2<br>bench + deployed variants</span>
+          <span class="chips"><span class="chip buy">to fab</span><span class="chip qty">3 + 1 bench</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">~45 solder joints · modules socketed · discretes soldered</p>
+          <p>The board everything plugs into. A breadboard cannot cross the Drake Passage — vibration and damp find every loose jumper — so each module gets a socket, each external wire gets a terminal, and the handful of support parts (the two load switches, pull-ups, the sense divider) get soldered down.</p>
+
+          <div class="pinmap">
+            <p class="pinmap-title">Pin map — every allocation exists on both candidate modules</p>
+            <div class="frame">
+              <table class="pins">
+                <thead><tr><th>Pin</th><th>Net</th><th>What it does</th></tr></thead>
+                <tbody>
+                  <tr><td class="pin">IO16 / IO17</td><td class="net">RB_TX / RB_RX</td><td>Serial link to the satellite modem</td></tr>
+                  <tr><td class="pin">IO18 / IO19</td><td class="net">SDA1 / SCL1</td><td>GPS bus (I²C1) — its own, see the backfeed note</td></tr>
+                  <tr><td class="pin">IO21 / IO22</td><td class="net">SDA0 / SCL0</td><td>Sensor bus (I²C0) — BME280, MAX17048, BMP581</td></tr>
+                  <tr><td class="pin">IO25</td><td class="net">GPS_EN</td><td>Turns the GPS rail on via the load switch</td></tr>
+                  <tr><td class="pin">IO26</td><td class="net">RB_EN</td><td>Turns the modem's battery rail on, through the second load switch</td></tr>
+                  <tr><td class="pin">IO14</td><td class="net">RB_ONOFF</td><td>The modem's own sleep input — wired as the alternative to cutting its rail</td></tr>
+                  <tr><td class="pin">IO4</td><td class="net">OW_DATA</td><td>1-Wire to the sea-temperature probe, 4.7 kΩ pull-up</td></tr>
+                  <tr><td class="pin">IO13</td><td class="net">SENSE_EXC</td><td>Excites the NTC and leak dividers — high only during a read</td></tr>
+                  <tr><td class="pin">IO34</td><td class="net">NTC_SENSE</td><td>Battery temperature (ADC1, input-only)</td></tr>
+                  <tr><td class="pin">IO35</td><td class="net">LEAK_SENSE</td><td>Leak pads (ADC1, input-only)</td></tr>
+                  <tr><td class="pin">spare</td><td class="net">IO23, IO36, IO39</td><td>Unallocated</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 2. SENSES ============ -->
+  <section class="group">
+    <div class="group-head">
+      <div class="group-tag">02</div>
+      <div>
+        <h2>The senses</h2>
+        <p>Three chips share one two-wire bus (I²C0 on IO21/IO22), each answering to its own address, and all three stay powered all the time because they idle in microamps. The GPS gets a second bus of its own. The two analogue sensors — battery temperature and the leak pads — hang off input-only pins on ADC1.</p>
+        <p><b>ADC1 is not an arbitrary choice.</b> The ESP32's other converter, ADC2, becomes unreadable whenever the radio is active. Putting both analogue sense jobs on ADC1 means nothing in this design cares what the radio is doing.</p>
+      </div>
+    </div>
+    <div class="parts">
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">BME280</span>
+          <span class="part-pn">SparkFun SEN-15440, Qwiic</span>
+          <span class="chips"><span class="chip have">owned 1 + 2 spare</span><span class="chip buy">buy 2</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">I²C0 · 0x77 · read every wake · never switched off</p>
+          <p>Air temperature and relative humidity. It plugs into the always-on Qwiic connector — a four-pin clip carrying power, ground and the two bus lines, so no soldering and no chance of wiring it backwards.</p>
+          <p class="why">Pressure is not its job — that belongs to the BMP581, which reaches an accuracy this part cannot. What it carries is temperature and humidity, and sealed inside the hull the humidity channel does double duty as a <b>condensation canary</b>: rising internal RH is the first sign the hull is no longer dry.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Fermion BMP581</span>
+          <span class="part-pn">DFRobot SEN0667</span>
+          <span class="chips"><span class="chip have">owned 3</span><span class="chip buy">buy 1</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">I²C0 · 0x47 · SOCK_BARO header · read every wake</p>
+          <p>The precision barometer, ±0.3 hPa. Pressure is the most scientifically useful thing a small probe can produce — it is what weather models actually ingest — and it only counts if it is genuinely accurate, which is why this part exists separately from the BME280.</p>
+          <p class="why">It also reports its own die temperature, which is not a weather number: it is the correction term. Electronics warm the air around them, and comparing die temperature to air temperature is how that self-heating gets subtracted back out.</p>
+          <p class="why"><b>Two practical constraints.</b> The Fermion breakout has no Qwiic connector, so a pin header is soldered to it once and then it plugs into a socket on the carrier like the MCU does. And it only offers two I²C addresses (0x47 / 0x46), so a maximum of two can ever share a bus — which matters at calibration time, when all three flying units plus the reference are run side by side and each needs its own logger. Its address does not clash with the BME280's 0x77 or the fuel gauge's 0x36.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">DS18B20 waterproof probe</span>
+          <span class="part-pn">1-Wire, stainless tip<br>Ø6.3 × 50 mm</span>
+          <span class="chips"><span class="chip have">owned 3</span><span class="chip buy">buy 2</span><span class="chip qty">1 per probe</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">1-Wire on IO4 · 4.7 kΩ pull-up to 3V3 · T8 terminal · read every wake</p>
+          <p>A sealed stainless temperature probe sitting in a pocket in the bottom of the hull. It reads <b>water</b> temperature along the track — something no fixed station can measure, and enough to detect crossing an ocean front, one of the mission's four questions.</p>
+          <p class="why"><b>The pocket is unconditional, so the probe is too.</b> The hull spec draws the pocket and its threaded roof bore on every hull whether a sensor goes into it or not, and blanking a hole is an untested variant of a joint that has never been pressure-tested. Fitting the gland the bore was drawn for is the better job than closing it off.</p>
+          <p class="why">"1-Wire" means data and clock share a single line: the sensor and the ESP32 take turns pulling it low, and a 4.7 kΩ resistor pulls it back up when neither is. That makes it the <b>only sensor here needing a pin that can both drive and read</b> — everything else analogue sits on input-only pins. It is also the reason IO4 was spent rather than one of the cheaper input-only spares.</p>
+          <p class="why">It is potted with thermally conductive epoxy — a different, faster-setting product than the structural one. Its lead reaches the dry cavity through a PG7 gland in the pocket roof, which <b>is</b> a real penetration: the thread is formed in 3 mm of printed plastic and has never been pressure-tested, so no hull is printed for deployment until it has been.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">SAM-M8Q GNSS</span>
+          <span class="part-pn">SparkFun GPS-15210<br>u-blox M8, chip antenna</span>
+          <span class="chips"><span class="chip have">owned 1</span><span class="chip buy">buy 2</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">I²C1 (IO18/IO19) · rail switched by IO25 · a fix every 2 h · ~70 mA with the MCU up</p>
+          <p>Position and true UTC. The position <i>is</i> the measurement here — the drift track is what the buoy exists to produce. <b>UTC matters just as much:</b> the ESP32's clock drifts by minutes over months, the buoy transmits at fixed synoptic hours, and a timestamp that has quietly slid cannot be lined up against the reference series it was deployed to compare with.</p>
+          <p class="why">A fix of a minute or two only works because the SparkFun board keeps a backup battery that holds the satellite almanac warm between power-ups, so it does a warm start (30 s – 2 min) rather than a cold one. That assumption is still untested — it is one of the bench gates, and at <b>12 fixes a day</b> this probe is heavily exposed to it: slow acquisition doubles the GPS line from ~14 to ~28 mAh/day.</p>
+          <p class="why"><b>Why its own bus.</b> This is called the single most important electrical decision on the board. I²C lines are held high by pull-up resistors, and every chip has protection diodes from its pins to its own supply. Cut the GPS's power while its data lines stay on the shared sensor bus, and current flows <i>from the bus pull-ups, through those diodes, into the dead chip</i> — roughly <b>2 mA continuously</b>, about 60 mAh/day — three-quarters of the buoy's entire daily budget, burned by a chip that is supposed to be switched off. Switching the GPS off would have cost more than leaving it on.</p>
+          <p class="why">The load switch makes it worse, not better: it actively pulls the switched rail to ground, which hard forward-biases those diodes instead of letting the rail float up to where they stop conducting. Series resistors were tried on paper and rejected — 1 kΩ only halves it. A bus buffer chip works but costs $2 and an SMD part.</p>
+          <p class="why">The fix costs nothing: give the GPS the second bus. The SparkFun breakout carries <i>its own</i> pull-ups powered from <i>its own</i> supply, so killing the rail kills the pull-ups too and there is nothing left to push current anywhere. It is not free in firmware, though — whenever the rail is off, IO18/IO19 must be set to inputs with the ESP32's internal pull-ups <b>disabled</b>, or the problem is rebuilt from the other side.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">MAX17048 fuel gauge</span>
+          <span class="part-pn">Adafruit #5580, Qwiic<br>ModelGauge algorithm</span>
+          <span class="chips"><span class="chip have">owned 3</span><span class="chip buy">buy 1</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">I²C0 · 0x36 · read every wake · ~4 µA hibernate</p>
+          <p>Battery millivolts and a state-of-charge percentage. Worth being precise about how it works: it is <b>not a coulomb counter</b> — it never measures current. It watches voltage and runs it through a lithium-cell model that accounts for load sag and relaxation. That is far better than a raw voltage reading, but it is still an inference from voltage.</p>
+          <p class="why">That model matters because voltage lies here. The transmit window pulls about 290 mA from the pack; a reading taken near it shows a battery far emptier than it is. And lithium cells sit on a flat plateau for most of their discharge — between roughly 30 % and 80 % the voltage barely moves, which is exactly the range you want a number for.</p>
+          <p class="why"><b>It has three jobs.</b> Millivolts ride in every message as telemetry. The percentage drives the <b>cadence downshift</b> — 4 → 2 → 1 messages a day — so a run of dark weeks degrades the mission gracefully instead of killing it. And the same reading gates the <b>low-voltage lockout</b>: below about 3.0 V, no transmit and no GPS, deepest hibernation, waking rarely to re-check. That reading is taken at the very top of the wake, before any rail is powered.</p>
+          <p class="why"><b>Why not just a resistor divider on an ADC pin?</b> That was the alternative and it is still recorded as the zero-part fallback, but the ESP32's ADC is nonlinear and noisy, and this reading sits under the only over-discharge protection the design has. The discharge path runs battery → LDO → everything and <i>never passes through the charger</i>, so no hardware can cut it; a hardware disconnect was weighed and declined, because it inserts a failure point into the one path that must never break and hard-cuts mid-transmission instead of parking cleanly. Two hardenings come with the pick: a watchdog, so a hung loop cannot stay awake for weeks, and <b>fail-toward-lockout</b> — a failed read or a wedged bus is treated as low battery, never as "assume fine".</p>
+          <p class="why">The open question is not whether to keep it but whether its percentage is trustworthy at −20 °C: the cell model is characterised near room temperature, and here it is watching six cells in parallel in Antarctica. The lockout threshold is deliberately left tunable until the cold-chamber work runs.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">10 kΩ NTC thermistor</span>
+          <span class="part-pn">B ≈ 3950, leaded<br>2 at the battery pack</span>
+          <span class="chips"><span class="chip buy">buy 8</span><span class="chip qty">2 per probe</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">IO13 excites → NTC (T7) → IO34 (ADC1) → 10 kΩ → GND · charger TS pin in parallel</p>
+          <p>A resistor whose resistance falls as it warms, fixed to the battery pack. It exists because <b>charging a lithium cell below freezing plates lithium metal onto the anode and permanently damages it</b> — and this probe lives below freezing. Discharging cold is harmless; charging cold is what destroys the pack.</p>
+          <p class="why"><b>The cruelty is in the timing:</b> solar panels harvest best on cold clear days, so the conditions that produce charging current are the conditions where the pack is coldest. Left alone, the probe would ruin its own battery exactly when it was charging well. The cells’ own protection boards do not cover this — they watch voltage and current, not temperature.</p>
+          <p class="why"><b>The charger gates; the MCU only reports.</b> The actual cold-charge inhibit happens in hardware, on the charger board's own TS pin, off the carrier entirely — both candidate chargers have one, so nothing about this depends on which one wins. The carrier's own divider does not protect anything; it just measures pack temperature so the firmware can set the "NTC gate state" flag in the message. Safety in hardware, reporting in software, and the two do not share a failure.</p>
+          <p class="why"><b>The divider is gated, and that is the clever part.</b> A permanently wired 10 kΩ + 10 kΩ divider across the battery would waste current forever. Instead the top of the divider is driven by IO13, which goes high only for the hourly read — so at rest the whole thing draws nothing. IO13 does the same job for the leak pads.</p>
+          <p class="why"><b>There are two of them, and that is deliberate</b> (decided 2026-09-08). One belongs entirely to the charger, one entirely to the carrier. Sharing a single thermistor would have hung the charge inhibit on the same node IO13 swings from 0 to 3.3 V every hour — and worse, one broken lead would have removed both the protection and the flag that reports it, in the same instant. A second $1 part keeps them independent.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Leak pads</span>
+          <span class="part-pn">two bare pads on a boss<br>cavity wall, z ≈ −83</span>
+          <span class="chips"><span class="chip qty">copper only, no part to buy</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">IO13 excites → 100 kΩ → IO35 (ADC1) → T9 → pads · 100 nF to GND · 50 ms settle, 8-sample median</p>
+          <p>Two exposed pads about 3 mm above the floor of the cavity, at the lowest point water would collect. Dry, nothing conducts; wet, the water bridges them and the leak bit goes out in the next message. If the seal ever fails we want the probe to say so, not die quietly.</p>
+          <p class="why"><b>The pads carry no standing voltage</b>, and that is deliberate: a permanently biased pair of electrodes sitting in condensation would electrolyse — corroding themselves away and slowly draining the battery. They are excited only during the read, off the same IO13 line as the thermistor.</p>
+          <p class="why">The 100 nF capacitor to ground is not decoration either. The ESP32's ADC wants to see a low source impedance, and the 100 kΩ excitation resistor is nowhere near low enough. The capacitor fixes that, but it and the resistor form a 10 ms time constant — which is precisely why the firmware waits 50 ms after raising IO13 and then takes the median of eight samples. Read it immediately and you measure the capacitor charging, not the water.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 3. VOICE ============ -->
+  <section class="group">
+    <div class="group-head">
+      <div class="group-tag">03</div>
+      <div>
+        <h2>The voice</h2>
+        <p>There is no phone signal in the Drake Passage, so the probe talks to satellites. Iridium is the one constellation that covers the poles, and it charges by the byte — which is why readings are batched all day and sent in one short burst, and why a full day of data is squeezed into 77 bytes.</p>
+        <p>This group is also the most expensive thing on the probe by a wide margin, and the biggest single line in the power budget — <b>around 80 % of the daily energy</b> — 29 to 116 mAh across the four windows.</p>
+      </div>
+    </div>
+    <div class="parts">
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">RockBLOCK 9603</span>
+          <span class="part-pn">Ground Control, SMA version<br>$302</span>
+          <span class="chips"><span class="chip have">owned 2</span><span class="chip buy">buy 1</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">UART IO16/IO17 · VBAT on pin 8, gated by IO26 · 3.0–5.4 V, 470 mA · 4×/day at 00/06/12/18 UTC</p>
+          <p>The satellite modem — the only part that can get a message off Antarctica with no infrastructure at all. The ESP32 talks to it over a plain serial link using AT commands, hands it a small packet, and it uplinks to whichever Iridium satellite is overhead.</p>
+          <p class="why"><b>Four transmits a day, at 00/06/12/18 UTC.</b> Those are the main synoptic hours — the times the world's weather stations all report — so the data drops straight into an existing frame of reference. Three-hourly reporting (adding 03/09/15/21) was the alternative and was declined: it doubles the energy for what the mission spec judged no additional operational value. Each message carries six hourly readings, so all 24 readings still get home; only the latency changes.</p>
+          <p class="why"><b>The important detail is in the firmware, not the hardware:</b> the reading buffer is cleared <i>only</i> when the modem confirms the send actually succeeded. A satellite pass that fails costs a retry, never data. That single rule is what makes the whole store-and-forward design honest.</p>
+          <p class="why"><b>It runs straight off the battery.</b> The module accepts 3.0–5.4 V on pin 8 and the pack is 3.0–4.2 V, so no conversion is needed at all. The 1.3 A figure you see quoted is the bare Iridium module's peak — the RockBLOCK board hides it behind supercapacitors of its own, so the supply never delivers more than <b>470 mA</b>. Those supercapacitors must never be removed; the datasheet says doing so will destroy the module.</p>
+          <p class="why">Three minutes of transmitting is ~14 mAh, against 1 mAh for all twenty-four hourly wakes combined. That is why the rail is switched off entirely between windows, gated by IO26 with a 100 kΩ pull-down holding it off while the ESP32 boots.</p>
+          <p class="why"><b>Cutting the rail has a price:</b> those supercapacitors take about <b>10 seconds to charge</b> at every power-up before the Iridium module will do anything. Roughly 1.3 mAh a window — small, but it is paid four times a day, and it went uncounted in the budget until 8 September.</p>
+          <p class="why"><b>How long a session actually lasts is the largest unknown in the whole budget</b>, and it has never been measured. A buoy washed by swell loses its sky view mid-pass and retries; the four windows are costed at 1.5, 3 and 6 minutes each for the best, typical and degraded cases, and that one term alone swings the daily total from ~48 to ~151 mAh — which is the difference between eleven months of life and under four. Measuring it is the highest-priority bench job before the September freeze.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Maxtena M1621HCT-P-SMA</span>
+          <span class="part-pn">P/N 100-00003-02<br>Ø19 × 49 mm · $80</span>
+          <span class="chips"><span class="chip have">owned 2</span><span class="chip buy">buy 1</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">1616–1626 MHz · 2.8 dBic · VSWR ≤ 1.5 · passive, no DC on the coax · IP67</p>
+          <p>The antenna the modem transmits through — a passive helical tuned to Iridium's band. Passive means it contains no amplifier and needs no power, so the coax carries only the radio signal and there is nothing on it that can fail.</p>
+          <p class="why"><b>Iridium satellites cross overhead from any direction</b>, unlike a geostationary dish that can be aimed once. The antenna therefore needs a clear view of the entire sky, which is why it stands proud at the very top of the sphere and why nothing may sit above it.</p>
+          <p class="why">It is <b>ground-plane independent</b> — most small antennas need a metal sheet beneath them to work against, and this one does not. Combined with being IP67 in its own right, that is what lets it pass straight out through the threaded gland in the crown. The hull needs no bulkhead connector face and no flat panel for it to bolt to.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Amphenol RF jumper</span>
+          <span class="part-pn">135110-03-06.00<br>RG-316 DS, 50 Ω, 6" · $26.50</span>
+          <span class="chips"><span class="chip have">owned 1</span><span class="chip buy">buy 2</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">SMA jack ↔ SMA plug · entirely inside the cavity</p>
+          <p>The short coaxial cable between antenna and modem. It looks like a trivial part and it is not — it is the one cable in the drawer with the right connector genders.</p>
+          <p class="why">The antenna ends in a <b>male plug</b>, so whatever it screws into must be a socket. This cable is jack (socket) on one end and plug on the other, which is exactly the pairing needed. The $5 generic jumpers already in the drawer are male on <i>both</i> ends and cannot mate the antenna at any price. Its part description on the distributor's site hides the gender entirely; it took a direct question to the manufacturer to confirm.</p>
+          <p class="why">50 Ω throughout, because a mismatched cable reflects transmit power back into the modem instead of radiating it.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 4. POWER ============ -->
+  <section class="group">
+    <div class="group-head">
+      <div class="group-tag">04</div>
+      <div>
+        <h2>The power plant</h2>
+        <p>Sun charges a battery; the battery feeds a single always-on 3.3 V rail; the two hungry parts get switched rails of their own so they cost nothing when idle. Three domains, and the whole argument of the design is in which things are allowed to be always-on.</p>
+        <p>The buoy must survive the dark months on battery alone — <b>~11.6 months best, ~7.1 typical, ~3.6 degraded</b> with zero sun — so solar extends life but is never counted on. That is why every microamp of idle draw gets argued about, and why a 2 mA leak was treated as a design emergency.</p>
+      </div>
+    </div>
+    <div class="parts">
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Voltaic P123 solar panel</span>
+          <span class="part-pn">6 V, 0.64 W, ETFE<br>66 × 66 × 2.9 mm, IP67</span>
+          <span class="chips"><span class="chip have">owned 3</span><span class="chip buy">buy 6</span><span class="chip qty">3 per probe</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">Vmp 6.07 V · Imp 110 mA · Voc 7.09 V · 3 in parallel → ~187 mAh per sun-hour</p>
+          <p>Three panels in three flat pockets cut into the crown of the sphere, wired in parallel — about 1.9 W together in good sun. Facing three different directions means a rolling buoy nearly always has one of them lit, which matters far more than peak output does.</p>
+          <p class="why"><b>Parallel, never series</b>, and that is a hard rule. In parallel the array's voltage stays at one panel's 7.09 V open-circuit, which sits inside the input window of both candidate chargers. In series it would triple, blowing straight past the fallback charger's 10 V limit.</p>
+          <p class="why">ETFE-faced and IP67, so spray and UV are not a problem. The crown pockets were dimensioned around this exact panel — a 76.166 mm pocket with a 71.4 mm seat — which is why the smaller P122 in the drawer is bench stock and not a substitute.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">1N5817 Schottky diode</span>
+          <span class="part-pn">3 per probe, one per panel</span>
+          <span class="chips"><span class="chip buy">buy 10</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">on the solar combiner board in the upper shell · one per panel · ~0.3–0.45 V drop</p>
+          <p>One diode in series with each panel, on the way to the charger. Panels wired in parallel while facing different directions will fight: a shaded panel stops being a source and becomes a load, draining the lit ones through the common node.</p>
+          <p class="why">A diode only lets current pass one way, so each panel can contribute or sit idle but never take. <b>Schottky specifically</b>, not an ordinary silicon diode: a Schottky drops about 0.3–0.45 V where a standard one drops 0.7. When the panel only makes 6 V and every volt matters to the charger's input window, that difference is worth the part number — and it is also why the diodes must exist in exactly one place. Put a second set on the carrier "for safety" and every panel pays the drop twice, about 0.9 V off a 6 V panel.</p>
+          <p class="why">They live on a small <b>solar combiner board in the upper shell</b>, next to the panels, rather than on the carrier. The panels plug into it, it carries the three diodes and both junctions, and <b>one JST-XH pair is the only solar wire that crosses the equator</b> — which is one less thing threaded past the flange the hull has to seal around.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Solar charger</span>
+          <span class="part-pn">Adafruit #6106 (bq25185)<br>chosen 8 Sept 2026</span>
+          <span class="chips"><span class="chip have">owned 2</span><span class="chip buy">buy 1</span><span class="chip qty">1 per probe</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">off-board on standoffs · exchanges only BATT+ and GND with the carrier</p>
+          <p>Charges the pack from the panels, and does <b>power-path</b> switching: when the sun is out the probe runs from the panels directly rather than cycling the battery. Every avoided charge/discharge cycle is battery life kept.</p>
+          <p class="why"><b>It has two jobs, not three.</b> It does not supply the modem: the RockBLOCK takes 3.0–5.4 V straight from the pack and buffers its own transmit burst, so the 5 V boost on this board is dead weight. <b>Its enable pad is tied to GND</b> — nothing drives it any more, and an unused boost whose enable floats can come up on its own, which is a milliamp in a design budgeted in microamps.</p>
+          <p class="why"><b>Why this board and not the bq24074.</b> Both do charging and power path, and both carry the temperature pin that inhibits cold charging — so the tie broke on price and on nothing else mattering: this one is $9 against $15. The bq24074 stays in the drawer, and one measurement could still promote it: if the bench meter shows this board does not idle in microamps, it is the fallback. The charger sits off-board on a terminal block, so that swap costs no board work.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Panasonic NCR18650GA</span>
+          <span class="part-pn">3450 mAh, protected button-top<br>6 in parallel per probe</span>
+          <span class="chips"><span class="chip have">owned 19</span><span class="chip order">20 on order</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">6 × 3450 mAh ≈ 21 Ah · ~17 Ah usable at +2 °C · 21 mm bay pitch · ~6.8 months, zero sun</p>
+          <p>The entire energy reserve. Six cells in parallel — which raises capacity, not voltage, so the pack behaves electrically like one very large 3.0–4.2 V cell. They drop into six bays printed directly into the battery platform, sitting low in the hull where the water is the thermal buffer.</p>
+          <p class="why"><b>"Protected" means each cell carries its own tiny circuit board</b> that disconnects it if it is shorted or drained too far. This is the last line of defence, and it protects the <i>cell</i> — it fires at about 2.5 V. The firmware lockout fires at 3.0 V and protects the <i>mission</i>. They are not redundant with each other; they defend different things.</p>
+          <p class="why"><b>Match their charge before wiring them in parallel.</b> Connect a full cell to a half-empty one and the difference dumps between them as current with nothing to limit it. This is also why 39 cells were bought against a need of 18 — a parallel bank wants spares that came off the same shelf at the same state of charge.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Nickel-plated cell contacts</span>
+          <span class="part-pn">uxcell, 16.5 × 16 mm<br>12 per probe</span>
+          <span class="chips"><span class="chip qty">1 spring + 1 plate per bay</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">fitted by hand after printing · bay walls raised 1.5 mm to back them</p>
+          <p>The metal ends of each printed cell bay — a spring at one end, a flat plate at the other. Plastic cannot conduct, and soldering directly to a cell is how you ruin one: the heat damages the internals near the terminal.</p>
+          <p class="why">The spring does two jobs at once — it makes the electrical contact and it keeps the cell pressed against the plate so it cannot rattle. Nickel plating rather than bare copper because it does not oxidise into a resistive film, and a growing contact resistance in a parallel bank means one cell quietly stops contributing.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">MCP1700-3302E/TO</span>
+          <span class="part-pn">3.3 V LDO, TO-92<br>250 mA, 1.6 µA quiescent</span>
+          <span class="chips"><span class="chip order">ordered 10</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">VBAT → polyfuse F1 → MCP1700 → 3V3 rail · always on</p>
+          <p>A three-legged regulator turning the battery's varying 3.0–4.2 V into a steady 3.3 V. It is here for exactly one number: <b>it costs 1.6 µA to run.</b> A typical regulator burns more than the sleeping ESP32 does, which would make the entire sleep budget pointless.</p>
+          <p class="why">This is the always-on rail — brain, sensor bus and the three I²C chips hang off it and are never switched. It is also the rail that must never fail: the discharge path runs battery → this regulator → everything, never through the charger, which is precisely why nothing was allowed to be inserted in series with it.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">TPS22918 load switch</span>
+          <span class="part-pn">TI, SOT-23-6, ×2 per probe<br>each with a 100 kΩ pull-down</span>
+          <span class="chips"><span class="chip buy">buy 8</span><span class="chip qty">2 per probe</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">U2: 3V3 → GPS, ON = IO25 · U3: VBAT → modem, ON = IO26</p>
+          <p>Two of them. The first is an electronically operated switch for the GPS rail — a MOSFET plus the control circuitry to drive it cleanly. GPS is the second-hungriest thing on the probe and it is wanted for two minutes a day; leaving it powered would cost more than every sensor combined.</p>
+          <p class="why"><b>The pull-down resistor is not optional.</b> While the ESP32 is booting its pins are undefined for a few milliseconds, and a floating gate could switch the rail on. The resistor guarantees "off" is the default state, including during a brownout or reset.</p>
+          <p class="why"><b>The second is identical and does the same job for the modem.</b> It sits on VBAT, driven by IO26, and cuts the modem's power between transmit windows. Rated 2 A against a 500 mA load, it drops about 26 mV.</p>
+          <p class="why">Its output-discharge feature — which actively drains the rail when it switches off — is the detail that turned the shared-bus leak into a serious drain rather than a small one, because it holds the dead chip's supply at ground and keeps its protection diodes conducting. It is a good feature that happened to make a bad wiring choice worse, and it is part of why the GPS ended up on its own bus.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Pack fuse</span>
+          <span class="part-pn">~1.5 A inline<br>at the BAT node</span>
+          <span class="chips"><span class="chip buy">buy 4</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">worst legitimate draw ≈ 0.6 A · ~2.5× headroom</p>
+          <p>A fuse in series with the whole battery bank. Its rating is set by the largest current the probe is <i>supposed</i> to draw — the modem's ~500 mA plus an awake ESP32, about <b>0.6 A</b>. Anything meaningfully above that is a fault. The fuse has to be small enough to act on one: a 3 A fuse in front of a 0.6 A load would let a 2 A fault burn indefinitely, which is not protection.</p>
+          <p class="why">A 21 Ah bank into a harness short, inside a sealed hull, is the case it exists for. <b>It is redundancy rather than the primary defence:</b> every cell is the protected type, each board cutting at around 8 A, and a short pulls through all six at once so they trip together. It is fitted anyway because it is a few dollars against a fire in a hull nobody can open.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 5. HULL ============ -->
+  <section class="group">
+    <div class="group-head">
+      <div class="group-tag">05</div>
+      <div>
+        <h2>The hull</h2>
+        <p>Two printed half-shells, glued and bolted at the equator, with five more printed parts inside. The hull is not packaging — it is the pressure boundary, the flotation and the mount for everything else, which makes the fasteners and the adhesive structural parts of it rather than accessories.</p>
+        <p>Four are built: three that deploy, and a fourth sacrificed to a 48-hour submersion test that proves the bonding process actually works before three real probes depend on it.</p>
+      </div>
+    </div>
+    <div class="parts">
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Polymaker PolyLite ASA</span>
+          <span class="part-pn">PF01031, yellow, 1.75 mm</span>
+          <span class="chips"><span class="chip buy">buy 4 kg</span><span class="chip qty">660 g per probe</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">Tg 98 °C · 43.8 MPa X-Y / 32 MPa Z · 3 mm wall, 5 perimeters · dry 7 h at 70 °C</p>
+          <p>The filament every printed part is made of. ASA rather than the usual PLA or PETG for two reasons: it does not go brittle and chalky under UV, and it bonds properly to epoxy and to itself.</p>
+          <p class="why"><b>The Z-strength number is the one that matters.</b> A printed part is much weaker across its layers than along them — 32 MPa versus 43.8 — and the equator seam runs exactly across the layers. That weakness is why the joint is bonded <i>and</i> bolted rather than trusting either alone.</p>
+          <p class="why">High-visibility yellow, which is the right colour for something you may have to spot in a grey sea. Dry the spool for 7 hours at 70 °C before printing — ASA absorbs moisture from the air, and wet filament prints weak and stringy, which on a pressure boundary is not cosmetic.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Equator flange hardware</span>
+          <span class="part-pn">M5 × 16 socket cap ×8 · ISO 7092 washers ×16 · plain hex nuts ×8 · A4-316</span>
+          <span class="chips"><span class="chip have">owned, all three</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">~619 mm seam · stack closes at exactly 16.0 mm · 0.00 mm proud · 8 mm open-end spanner</p>
+          <p>Eight bolts clamping the two half-shells together. Their first job is holding the joint evenly closed while the epoxy cures; afterwards they are permanent mechanical backup should the bond ever let go.</p>
+          <p class="why"><b>A4-316 marine stainless throughout, and that is a rule, not a preference:</b> two different metals in contact with seawater form a battery and the less noble one corrodes away. Every external fastener on the probe is the same alloy, which is also why the flange uses plain through-holes and nuts rather than brass inserts.</p>
+          <p class="why"><b>Plain nuts, not nylon-insert ones.</b> Self-loosening under vibration needs the joint faces to slip sideways against each other, and a flange bonded across its full annulus cannot slip — no mechanism, no need for the locking nut.</p>
+          <p class="why">The stack closes at exactly 16.0 mm and the bolt lands flush, so there is zero margin: a 1.6 mm washer or a nut 0.7 mm taller than specified will not fit. Use an open-end spanner — a socket fouls the curve of the hull.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Marine epoxy + slow hardener</span>
+          <span class="part-pn">West System 105/209 or equivalent<br>~60 g per hull</span>
+          <span class="chips"><span class="chip buy">buy starter kit</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">pot life ≥ 45 min · flange faces, 6 mm lap, external fillet, wire potting, gland, ballast bed</p>
+          <p>The actual seal — bolts alone do not make a hull watertight. It bonds both flange faces and the overlapping lap that backs them, fills the fillet outside, and pots every wire that passes through the shell.</p>
+          <p class="why"><b>The slow hardener is the specification, not a convenience.</b> A 619 mm seam takes time to lay up evenly, and a fast epoxy that goes off in fifteen minutes will start curing before the second half is closed.</p>
+          <p class="why">Wear gloves, without exception: amine hardeners are cumulative skin sensitisers — you can work with them for years and then abruptly become allergic — and this is a build with students on it.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Colloidal silica thickener</span>
+          <span class="part-pn">e.g. West System 406 · ~10 g per hull</span>
+          <span class="chips"><span class="chip buy">buy</span></span>
+        </div>
+        <div class="part-body">
+          <p class="why">A very light powder stirred into the <i>same</i> epoxy — not a different product. Liquid epoxy sags out of a vertical groove and cures somewhere useless; thickened, it stays where it is put, which is what the external fillet running around the equator needs.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Pressure vent</span>
+          <span class="part-pn">Amphenol LTW VENT-PS2NBK-O8001<br>M6 × 0.75, ePTFE, IP68</span>
+          <span class="chips"><span class="chip buy">buy 4</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">seats from the pocket side in the crown's vent pocket · required on every probe</p>
+          <p>A small screw-in plug with a breathable membrane. <b>A fully sealed sphere would measure only its own internal pressure</b>, which makes the barometer — the probe's most valuable sensor — useless. The membrane lets air pressure equalise while blocking liquid water.</p>
+          <p class="why">It has a second job the barometer does not care about: without it, the hull would balloon and crush as temperature swings, working the equator joint back and forth for months.</p>
+          <p class="why"><b>The thread is M6 × 0.75.</b> Order against the part number above, not against a size remembered from a list — an M12 vent will not fit the pocket and cannot be made to.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Internal mounts</span>
+          <span class="part-pn">M5 × 10 socket cap into<br>M5 × 8, Ø7.117 brass heat-set inserts</span>
+          <span class="chips"><span class="chip have">screws owned 60</span><span class="chip buy">buy 12 inserts</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">15 per build · ballast lid 4 · battery platform 4 · main platform 4 · solar platform 3</p>
+          <p>What holds the four internal platforms into the shell. Printed threads strip; brass ones do not. A heat-set insert is a knurled brass sleeve pushed in with a soldering iron — the plastic melts around the knurls and locks it permanently.</p>
+          <p class="why"><b>The bore is cut deliberately undersize with a 1 mm sump at the bottom</b> for the plastic the insert displaces. Melted material has to go somewhere; without the sump the insert stops proud and the platform will not seat.</p>
+          <p class="why">The exact insert matters more than "M5 heat-set" suggests: the bore is sized for a Ø7.117 × 8.0 body, and the common generic sizes are Ø7.0 × 9.5 or Ø6.4 × 8. A narrower one spins in the mouth instead of melting in; a longer one has nowhere to go.</p>
+          <p class="why">These are stainless screws into brass inside a sealed dry hull, which is the one place the same-alloy rule is relaxed — a galvanic couple needs an electrolyte, and if there is water in there the probe has already failed on other grounds.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Panel-frame fasteners</span>
+          <span class="part-pn">M3 × 6 socket cap into<br>M3 × Ø4.0 × 4.0 brass inserts</span>
+          <span class="chips"><span class="chip have">owned 145 of each</span><span class="chip qty">7 per probe</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">6 panel-frame lugs + 1 vent cover · Ø3.5 bore cut 5.0 deep · driven from inside the cavity</p>
+          <p>Six hold the three solar-panel frames onto the crown; the seventh holds the vent cover. They are driven outward from inside the cavity, through a hole in the shell, which makes them fasteners on a real hull penetration.</p>
+          <p class="why"><b>The 4.0 mm length is the right one and the 5.0 is not</b>, even though both are in the drawer: the bore is 5.0 deep, so an insert as long as its own bore has no sump and stops proud of the surface.</p>
+          <p class="why">The screw crosses 3 mm of shell plus a 0.5 mm air gap before it reaches thread, leaving only 2.5 mm of engagement — so every fraction of a millimetre a bonded frame sits proud comes straight off that. The × 6 length absorbs about half a millimetre of it, which is the accepted margin.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Closed-cell foam pad</span>
+          <span class="part-pn">3 mm sheet, ~120 × 110 mm per build</span>
+          <span class="chips"><span class="chip buy">buy 1 A4 sheet</span></span>
+        </div>
+        <div class="part-body">
+          <p class="why">Bonded to the underside of the main platform, pressing down on the cells below. 18650 cells vary slightly in diameter, and a cell that can move in its bay will eventually break a contact. The foam takes up the 3 mm gap and absorbs the variation without needing each bay to be a precise fit. <b>Closed-cell</b> specifically — open-cell foam would soak up any condensation and hold it against the pack.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Acetone</span>
+          <span class="part-pn">technical grade, ~100 ml per hull</span>
+          <span class="chips"><span class="chip buy">buy if absent</span></span>
+        </div>
+        <div class="part-body">
+          <p class="why">Two jobs. Dissolved with scrap ASA it makes a slurry brushed inside the empty shells — it fills the microscopic gaps between print layers that would otherwise seep, and because it is the same material it fuses rather than coats. Neat, it degreases the flange faces before bonding: epoxy will not stick to a fingerprint.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Desiccant + carbon sachets</span>
+          <span class="part-pn">2 × 10 g indicating silica gel + 1 activated carbon</span>
+          <span class="chips"><span class="chip buy">buy 4 sets</span></span>
+        </div>
+        <div class="part-body">
+          <p class="why">Sealed inside the cavity at assembly. Whatever warm damp air is trapped when the hull closes will condense on the electronics the first cold night. The <b>indicating</b> type changes colour, which makes it a test instrument as well as a consumable — opening the submersion test article and seeing the colour tells you immediately whether water got in. The carbon sachet mops up epoxy cure vapour, which otherwise sits in the cavity and upsets the humidity sensor for weeks.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 6. KEEL ============ -->
+  <section class="group">
+    <div class="group-head">
+      <div class="group-tag">06</div>
+      <div>
+        <h2>The keel</h2>
+        <p>A sphere floats happily in any orientation, which is exactly wrong here: the solar panels, the antenna and the vent are all on one side of it. Weight low in the hull fixes that permanently, with no moving parts and nothing to run flat.</p>
+      </div>
+    </div>
+    <div class="parts">
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Steel bench block</span>
+          <span class="part-pn">OWDEN, stepped puck<br>Ø76.5 × 16.2 mm, 69.04 cm³</span>
+          <span class="chips"><span class="chip have">owned 1</span><span class="chip qty">530 g measured</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">calm waterline −2.2 mm · freeboard to the vent bore 67.2 mm calm, 54.8 at full drogue pull</p>
+          <p>The ballast — half a kilo of steel in the foot of the sphere. It pulls the centre of gravity below the centre of buoyancy, and that separation is the entire righting mechanism: tip the buoy and gravity turns it back, every time, with nothing to wear out or run flat.</p>
+          <p class="why"><b>Steel rather than lead, deliberately.</b> This probe is expendable and may well be lost at sea, and lead is not something to leave in the Southern Ocean. Steel is about 30 % less dense so it takes more volume for the same mass — an accepted cost. It doubles as a real bench tool, which is why it was cheap.</p>
+          <p class="why">It must be painted or epoxy-coated before it goes in: the chrome plating chips, and bare steel rusts in a hull that can condense.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Ballast collar + lid</span>
+          <span class="part-pn">printed ASA, part of the hull set<br>4 × M5 into brass inserts</span>
+          <span class="chips"><span class="chip qty">printed</span></span>
+        </div>
+        <div class="part-body">
+          <p class="why">A printed ring the steel puck drops into and a hollow lid screwed down over it. A loose half-kilo weight inside a buoy in a Drake Passage storm is a wrecking ball — it would destroy the battery platform above it in minutes. Four M5 screws into heat-set inserts clamp it so it cannot shift at all. The lid is hollow to save mass where mass is not wanted: high up.</p>
+        </div>
+      </div>
+
+      <div class="part">
+        <div class="part-id">
+          <span class="part-name">Drogue</span>
+          <span class="part-pn">materials not yet chosen<br>harness attaches outside, pierces nothing</span>
+          <span class="chips"><span class="chip buy">own work cycle</span></span>
+        </div>
+        <div class="part-body">
+          <p class="wire">at full pull the waterline rises to +10.2 mm — the case the freeboard rule is sized against</p>
+          <p>An underwater sea-anchor on a line below the buoy. Without one the buoy is pushed by wind on the exposed part of the sphere and tracks the weather instead of the current — which would make the drift measurement answer the wrong question entirely.</p>
+          <p class="why">A drogue hangs deep enough to be gripped by water rather than air, so the assembly moves with the current and the buoy is dragged along by it. Still open design work — but its pull is already in the hydrostatics, because a drogue under load pulls the buoy <i>down</i>, and the vent bore has to stay above water even then.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="legend">
+    <span><span class="chip have">owned</span> in the drawer</span>
+    <span><span class="chip order">ordered</span> paid for, not arrived</span>
+    <span><span class="chip buy">to buy</span> not yet bought</span>
+  </div>
+
+  <div class="closing">
+    <h2>What is still missing</h2>
+    <p>The three biggest gaps are the third satellite modem and antenna (~$350 together), 4 kg of filament for four hulls, and the small electronics believed bought until a receipt check on 8 September found no such order — the load switches and the thermistors. A <b>third charger</b> (~$9) joined that list the moment the charger was chosen: two boards of each candidate looked like enough stock only while both types counted.</p>
+    <p>No bulk capacitor appears on that list, because the design has none: the modem runs straight off the battery and buffers its own transmit burst. The charger pick is open and turns on idle current, power-path behaviour and the TS pin.</p>
+    <p>Live quantities and prices are in <code>device/hardware/bom/bom-prod.md</code>; what is physically in the drawer is <code>device/hardware/inventory.md</code>; nets and pins are in the carrier spec; the hull's own figures are in <code>device/enclosure/buoy-description.md</code>. This page is a plain-English reading of those; each figure's home is the document that owns it.</p>
+  </div>
+
+</div>
+</body>
+</html>
