@@ -864,14 +864,15 @@
           <!-- ---- IO25 -> U2 -> QW2 (GPS) ---- -->
           <line x1="600" y1="296" x2="664" y2="296" stroke="var(--ink-2)" stroke-width="1.5"/>
           <text class="svg-sub" x="620" y="292">GPS_EN</text>
-          <text class="svg-sub" x="620" y="326">R1 100k &darr; GND</text>
-          <text class="svg-sub" x="714" y="346" text-anchor="end">3V3_GPS</text>
+          <text class="svg-sub" x="620" y="340">R1 100k &darr; GND</text>
           <path d="M700,92 L700,280" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
           <circle cx="700" cy="92" r="3" fill="var(--accent)"/>
-          <rect x="664" y="280" width="96" height="32" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <rect x="664" y="280" width="96" height="45" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
           <text class="svg-label" x="712" y="294" text-anchor="middle">U2 TPS22918</text>
           <text class="svg-sub" x="712" y="307" text-anchor="middle">GPS rail switch</text>
-          <path d="M720,312 L720,364 L762,364" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 3"/>
+          <text class="svg-sub" x="712" y="320" text-anchor="middle">out &rarr; 3V3_GPS</text>
+          <path d="M720,325 L720,364 L752,364" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 3"/>
+          <polygon points="752,359 762,364 752,369" fill="var(--accent)"/>
           <line x1="600" y1="378" x2="762" y2="378" stroke="var(--ink-2)" stroke-width="1.5"/>
           <line x1="600" y1="392" x2="762" y2="392" stroke="var(--ink-2)" stroke-width="1.5"/>
           <text class="svg-sub" x="620" y="372">SDA1 / SCL1 &mdash; I&sup2;C1</text>
