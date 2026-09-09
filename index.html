@@ -588,6 +588,158 @@
       <figcaption>Two rails leave the pack. <b>VBAT</b> goes straight to the modem through its own switch; everything else comes off the <b>3.3 V</b> rail behind the LDO. Nothing on the 3.3 V rail is ever switched except the GPS — the three sensors idle in microamps and are cheaper to leave on than to gate.</figcaption>
     </figure>
 
+    <p class="pinmap-title">The power source, close up</p>
+    <p class="note">The drawing above compresses the whole left-hand side into two boxes. Here is that part alone: what physically joins what, in what connector, and where the one thing that surprises people happens &mdash; the charger&rsquo;s <span class="net">BAT</span> pad is not an output. It is a node the pack sits on and the loads hang off.</p>
+
+    <figure>
+      <div class="frame">
+        <svg viewBox="0 0 1000 560" role="img" aria-label="Detailed power-source schema. Three Voltaic P123 panels each go through a JST-SM connector, female on the panel side, to a solar combiner perfboard in the upper shell carrying three 1N5817 Schottky diodes and both junctions. One JST-XH pair crosses the equator flange to the bq25185 charger's SOLAR IN. A 10 kilohm NTC at the pack wires to the charger's TS pin and inhibits cold charging in hardware. The charger's BAT pad, the six-cell 18650 pack and the carrier's T5 screw terminal are all one electrical node: the pack reaches it through a 1.5 amp fuse and, proposed but not decided, inline through the MAX17048 fuel gauge's two JST-PH ports. A second, separate NTC goes to the carrier's IO13 and IO34. From T5 two wires carry BATT plus and ground, and the two rails leave: VBAT tapped before F1 to the modem's load switch, and F1 to the MCP1700 LDO to the 3.3 volt rail.">
+
+          <text class="svg-sub" x="20" y="16">&#9312; HARVEST</text>
+
+          <!-- ---- panels ---- -->
+          <g fill="var(--accent-hi)" stroke="var(--ink)" stroke-width="1.2">
+            <rect x="30"  y="26" width="104" height="28" rx="2"/>
+            <rect x="154" y="26" width="104" height="28" rx="2"/>
+            <rect x="278" y="26" width="104" height="28" rx="2"/>
+          </g>
+          <text class="svg-label" x="82"  y="45" text-anchor="middle">P123 #1</text>
+          <text class="svg-label" x="206" y="45" text-anchor="middle">P123 #2</text>
+          <text class="svg-label" x="330" y="45" text-anchor="middle">P123 #3</text>
+
+          <!-- ---- combiner enclosure ---- -->
+          <rect x="20" y="60" width="370" height="74" rx="3" fill="none" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>
+          <text class="svg-sub" x="28" y="129">combiner board</text>
+
+          <!-- panel leads + JST-SM -->
+          <g stroke="var(--accent)" stroke-width="2" fill="none">
+            <path d="M82,54 L82,66"/><path d="M206,54 L206,66"/><path d="M330,54 L330,66"/>
+            <path d="M82,77 L82,90"/><path d="M206,77 L206,90"/><path d="M330,77 L330,90"/>
+            <path d="M82,103 L82,118"/><path d="M206,103 L206,118"/><path d="M330,103 L330,118"/>
+            <path d="M82,118 L330,118"/>
+            <path d="M206,118 L206,142"/>
+          </g>
+          <g fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.1">
+            <rect x="69"  y="66" width="26" height="11" rx="1.5"/>
+            <rect x="193" y="66" width="26" height="11" rx="1.5"/>
+            <rect x="317" y="66" width="26" height="11" rx="1.5"/>
+          </g>
+          <g fill="var(--ink)" stroke="var(--ink)" stroke-width="1.4">
+            <polygon points="75,90 89,90 82,101"/><polygon points="199,90 213,90 206,101"/><polygon points="323,90 337,90 330,101"/>
+            <path d="M75,103 L89,103"/><path d="M199,103 L213,103"/><path d="M323,103 L337,103"/>
+          </g>
+
+          <!-- ---- harvest notes ---- -->
+          <text class="svg-sub" x="404" y="40">Voltaic P123 &middot; 66 &times; 66 &times; 2.9 mm &middot; IP67 &middot; 0.64 W each</text>
+          <text class="svg-sub" x="404" y="53">Vmp 6.07 V &middot; Imp 110 mA &middot; Voc 7.09 V &middot; Isc 120 mA [D]</text>
+          <text class="svg-sub" x="404" y="66">3 &times; 110 mA nominal &rarr; ~187 mAh per sun-hour once derated</text>
+          <text class="svg-sub" x="404" y="86">JST-SM at each panel, and the FEMALE half is on the panel</text>
+          <text class="svg-sub" x="404" y="99">side: it is live whenever there is light, and a recessed</text>
+          <text class="svg-sub" x="404" y="112">contact cannot be shorted by a dropped tool. 24 AWG.</text>
+          <text class="svg-sub" x="404" y="132">Combiner = perfboard in the upper shell: D1&ndash;D3 1N5817, both</text>
+          <text class="svg-sub" x="404" y="145">junctions, a deferred TVS pad. The carrier has no solar role.</text>
+
+          <!-- ---- the equator ---- -->
+          <text class="svg-sub" x="20" y="157">the equator flange</text>
+          <path d="M20,161 L980,161" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="6 4" fill="none"/>
+          <path d="M206,142 L206,196" stroke="var(--accent)" stroke-width="2.4" fill="none"/>
+          <rect x="193" y="166" width="26" height="11" rx="1.5" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.1"/>
+          <text class="svg-sub" x="228" y="173">JST-XH &mdash; the only solar wire that crosses the flange, and a different family</text>
+          <text class="svg-sub" x="228" y="186">on purpose: a panel physically cannot be plugged into the charger input.</text>
+
+          <!-- ---- charger ---- -->
+          <text class="svg-sub" x="20" y="190">&#9313; CHARGER</text>
+          <text class="svg-sub" x="148" y="192">SOLAR IN</text>
+          <rect x="60" y="196" width="300" height="104" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
+          <text class="svg-label" x="210" y="219" text-anchor="middle">Solar charger &mdash; bq25185 (#6106)</text>
+          <text class="svg-sub"   x="210" y="237" text-anchor="middle">linear &mdash; battery current &asymp; panel current</text>
+          <text class="svg-sub"   x="210" y="252" text-anchor="middle">input window 5&ndash;18 V &middot; CV termination 4.2 V</text>
+          <text class="svg-sub"   x="210" y="267" text-anchor="middle">cold-charge inhibit on its own TS pin</text>
+          <text class="svg-sub"   x="210" y="285" text-anchor="middle">5 V boost UNUSED &mdash; EN pad to GND (PROC-15)</text>
+
+          <path d="M360,232 L404,232" stroke="var(--ink-2)" stroke-width="1.6" fill="none"/>
+          <text class="svg-sub" x="364" y="227">TS</text>
+          <rect x="404" y="216" width="142" height="34" rx="3" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.2"/>
+          <text class="svg-label" x="475" y="231" text-anchor="middle">10 k&#8486; NTC #1</text>
+          <text class="svg-sub"   x="475" y="244" text-anchor="middle">sits at the pack</text>
+
+          <text class="svg-sub" x="560" y="214">Cold-charge inhibit happens here, in hardware and off the</text>
+          <text class="svg-sub" x="560" y="227">carrier. The MCU never sees this sensor.</text>
+          <text class="svg-sub" x="560" y="247">NTC #2 below is a SECOND sensor, not a tap off the same</text>
+          <text class="svg-sub" x="560" y="260">one: the gate and the flag that reports it must not be able</text>
+          <text class="svg-sub" x="560" y="273">to fail together, and one broken lead would otherwise</text>
+          <text class="svg-sub" x="560" y="286">remove both at the same instant.</text>
+
+          <!-- ---- the BAT node ---- -->
+          <text class="svg-sub" x="20" y="330">&#9314; BAT</text>
+          <path d="M140,300 L140,336" stroke="var(--accent)" stroke-width="2.4" fill="none"/>
+          <path d="M118,336 L620,336" stroke="var(--accent)" stroke-width="5" fill="none"/>
+          <text class="svg-label" x="176" y="329">BAT &mdash; one node, not an output</text>
+
+          <!-- ---- carrier hand-off ---- -->
+          <rect x="620" y="300" width="340" height="84" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
+          <text class="svg-label" x="636" y="321">meteo-carrier &mdash; T5 screw terminal</text>
+          <text class="svg-sub"   x="636" y="338">BATT+ / GND &mdash; two wires only, 20 AWG</text>
+          <text class="svg-sub"   x="636" y="357">&#8593; VBAT tapped BEFORE F1 &rarr; U3 &rarr; modem, ~500 mA in TX</text>
+          <text class="svg-sub"   x="636" y="372">&#8595; F1 1.1 A &rarr; MCP1700 LDO &rarr; the 3V3 rail</text>
+
+          <!-- ---- pack chain ---- -->
+          <g stroke="var(--accent)" stroke-width="2.4" fill="none">
+            <path d="M300,336 L300,356"/>
+            <path d="M300,378 L300,400"/>
+            <path d="M300,446 L300,470"/>
+          </g>
+          <rect x="262" y="356" width="76" height="22" rx="2" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.2"/>
+          <text class="svg-sub" x="300" y="371" text-anchor="middle">fuse ~1.5 A</text>
+          <text class="svg-sub" x="346" y="393">JST-PH</text>
+
+          <rect x="228" y="400" width="144" height="46" rx="3" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1.6" stroke-dasharray="5 3"/>
+          <text class="svg-label" x="300" y="420" text-anchor="middle">MAX17048</text>
+          <text class="svg-sub"   x="300" y="434" text-anchor="middle">inline &mdash; proposed</text>
+          <text class="svg-sub" x="346" y="463">JST-PH</text>
+
+          <path d="M372,423 L552,423" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="2 3" fill="none"/>
+          <text class="svg-sub" x="560" y="411">3V3 off the Qwiic chain is its SUPPLY. The two JST-PH</text>
+          <text class="svg-sub" x="560" y="424">ports are the pack it MEASURES &mdash; separate pins, which</text>
+          <text class="svg-sub" x="560" y="437">is what lets a 3.3 V rail power a gauge watching 4.2 V.</text>
+          <text class="svg-sub" x="560" y="450">&#9888; PROC-18 &mdash; inline is inferred from the two ports, not decided.</text>
+
+          <!-- ---- NTC 2 ---- -->
+          <rect x="24" y="400" width="160" height="46" rx="3" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.2"/>
+          <text class="svg-label" x="104" y="420" text-anchor="middle">10 k&#8486; NTC #2</text>
+          <text class="svg-sub"   x="104" y="434" text-anchor="middle">&rarr; carrier IO13 / IO34</text>
+          <path d="M150,470 L150,446" stroke="var(--ink-2)" stroke-width="1.6" fill="none"/>
+
+          <!-- ---- the pack ---- -->
+          <text class="svg-sub" x="20" y="466">&#9315; PACK</text>
+          <rect x="110" y="470" width="380" height="68" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
+          <text class="svg-label" x="300" y="490" text-anchor="middle">6 &times; NCR18650GA &mdash; protected button-top</text>
+          <text class="svg-sub"   x="300" y="505" text-anchor="middle">3450 mAh each &middot; ~21 Ah in parallel &middot; 3.0&ndash;4.2 V</text>
+          <g fill="var(--accent-hi)" stroke="var(--ink)" stroke-width="1">
+            <rect x="122" y="512" width="54" height="16" rx="2"/>
+            <rect x="180" y="512" width="54" height="16" rx="2"/>
+            <rect x="238" y="512" width="54" height="16" rx="2"/>
+            <rect x="296" y="512" width="54" height="16" rx="2"/>
+            <rect x="354" y="512" width="54" height="16" rx="2"/>
+            <rect x="412" y="512" width="54" height="16" rx="2"/>
+          </g>
+
+          <!-- ---- legend ---- -->
+          <g>
+            <path d="M560,478 L588,478" stroke="var(--accent)" stroke-width="3"/>
+            <text class="svg-sub" x="594" y="482">power path</text>
+            <path d="M560,498 L588,498" stroke="var(--ink-2)" stroke-width="2" stroke-dasharray="5 3"/>
+            <text class="svg-sub" x="594" y="502">proposed &mdash; not yet decided</text>
+            <path d="M560,518 L588,518" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="2 3"/>
+            <text class="svg-sub" x="594" y="522">supply only, not the measured pack</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Three connector families, on purpose. <b>JST-SM</b> panel&rarr;combiner, <b>JST-XH</b> combiner&rarr;charger, <b>JST-PH</b> pack&rarr;charger: a panel cannot be plugged into a battery port, and the keying does the remembering instead of the builder. Wire is <b>24 AWG</b> on the solar side and <b>20 AWG</b> on the pack side &mdash; the pack link is the one that carries current, and most of it flows <i>away</i> from the charger.</figcaption>
+    </figure>
+
+    <p class="note"><b>The BAT pad is not an output.</b> The pack, the charger&rsquo;s <span class="net">BAT</span> pad and the carrier&rsquo;s <span class="net">T5</span> are one electrical point. Nothing draws <i>through</i> the charger &mdash; the LDO and the modem&rsquo;s load switch hang straight off the node, and the charger merely pushes current into it when the sun is up. That is why the wiring page can say the discharge path &ldquo;never passes the charger&rdquo; while the drawing above it shows <span class="net">VBAT</span> leaving one: same node, two ways of saying it. The practical consequence is that those two <b>BATT+/GND</b> wires carry the modem&rsquo;s ~500 mA transmit burst, not just charge current.</p>
+
     <div class="pinmap">
       <p class="pinmap-title">Every part — what powers it, what talks to it</p>
       <div class="frame">
