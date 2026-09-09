@@ -740,6 +740,275 @@
 
     <p class="note"><b>The BAT pad is not an output.</b> The pack, the charger&rsquo;s <span class="net">BAT</span> pad and the carrier&rsquo;s <span class="net">T5</span> are one electrical point. Nothing draws <i>through</i> the charger &mdash; the LDO and the modem&rsquo;s load switch hang straight off the node, and the charger merely pushes current into it when the sun is up. That is why the wiring page can say the discharge path &ldquo;never passes the charger&rdquo; while the drawing above it shows <span class="net">VBAT</span> leaving one: same node, two ways of saying it. The practical consequence is that those two <b>BATT+/GND</b> wires carry the modem&rsquo;s ~500 mA transmit burst, not just charge current.</p>
 
+    <p class="pinmap-title">The carrier, close up</p>
+    <p class="note">The board itself, seen from above, with every socket and every wire port that the connection table gives it. The ESP32 module plugs into the middle; the off-board things stand around the edge with the cable that joins each of them, pin by pin. Pins are grouped by job, not by their place on the module&rsquo;s header &mdash; the physical positions are what calipers on the two modules settle, and that is a gate layout cannot start without.</p>
+
+    <figure>
+      <div class="frame">
+        <svg viewBox="0 0 1000 810" role="img" aria-label="The meteo-carrier board from above. On the left edge, port J5 brings BATT+ and GND from the off-board bq25185 charger; inside, VBAT splits before polyfuse F1 into the U3 load switch, gated by IO26, which feeds port J6 to the RockBLOCK modem on pin 8, and through F1 into the MCP1700 LDO and jumper JP1 to the always-on 3.3 V rail. The FireBeetle 2 ESP32-E sits in socket SOCK_FB in the middle, with the wider unpopulated SOCK_DEVKIT around it. Its pins fan out: IO25 gates load switch U2, which feeds Qwiic port QW2 and the SAM-M8Q GPS on I2C1 pins IO18 and IO19; IO21 and IO22 form I2C0 to Qwiic port QW1 and the MAX17048 fuel gauge, and to SOCK_BARO holding the BMP581; IO4 is 1-Wire to port J8 and the DS18B20; IO13 excites the NTC divider on port J7, read on IO34, and through R5 the leak pads on port J9, read on IO35. UART pins IO17 and IO16 and the On/Off pin IO14 go to J6. A dashed seat marks where the header-only BME280 will attach, still undecided.">
+
+          <!-- ---- the board ---- -->
+          <rect x="200" y="24" width="570" height="766" rx="8" fill="var(--surface-2)" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-label" x="758" y="46" text-anchor="end">meteo-carrier &mdash; one board, five copies</text>
+          <text class="svg-sub" x="758" y="60" text-anchor="end">&le; 100 &times; 80 mm &middot; every wire port is JST-XH &middot; ground is a pour on the back, not drawn</text>
+
+          <!-- ---- charger, off-board, and J5 ---- -->
+          <rect x="10" y="62" width="162" height="66" rx="3" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="18" y="78">J5 &#9656; solar charger</text>
+          <text class="svg-sub" x="18" y="92">bq25185, off-board</text>
+          <text class="svg-sub" x="18" y="105">1 BATT+ &middot; 2 GND &middot; 20 AWG</text>
+          <text class="svg-sub" x="18" y="118">the BAT node &mdash; see above</text>
+          <line x1="172" y1="92" x2="192" y2="92" stroke="var(--accent)" stroke-width="2.5"/>
+          <rect x="192" y="84" width="16" height="30" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="200" y="95" text-anchor="middle" style="font-size:7.5px">1</text>
+          <text class="svg-sub" x="200" y="109" text-anchor="middle" style="font-size:7.5px">2</text>
+
+          <!-- ---- VBAT -> F1 -> U1 -> JP1 -> 3V3 rail ---- -->
+          <line x1="208" y1="92" x2="244" y2="92" stroke="var(--accent)" stroke-width="2.5"/>
+          <rect x="244" y="82" width="58" height="20" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="273" y="96" text-anchor="middle" style="fill:var(--ink)">F1 1.1 A</text>
+          <line x1="302" y1="92" x2="320" y2="92" stroke="var(--accent)" stroke-width="2.5"/>
+          <rect x="320" y="76" width="116" height="32" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="378" y="90" text-anchor="middle">U1 MCP1700</text>
+          <text class="svg-sub" x="378" y="103" text-anchor="middle">3.3 V LDO &middot; 1.6 &micro;A</text>
+          <line x1="436" y1="92" x2="452" y2="92" stroke="var(--accent)" stroke-width="2.5"/>
+          <rect x="452" y="82" width="36" height="20" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="470" y="96" text-anchor="middle" style="fill:var(--ink)">JP1</text>
+          <line x1="488" y1="92" x2="740" y2="92" stroke="var(--accent)" stroke-width="2.5"/>
+          <polygon points="740,87 750,92 740,97" fill="var(--accent)"/>
+          <text class="svg-sub" x="498" y="86" style="fill:var(--ink)">3V3 &mdash; the always-on rail</text>
+
+          <!-- VBAT tap, before F1, into U3 -->
+          <circle cx="226" cy="92" r="3" fill="var(--accent)"/>
+          <path d="M226,92 L226,130 L386,130 L386,150" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <text class="svg-sub" x="232" y="124">VBAT &mdash; tapped before F1</text>
+          <rect x="330" y="150" width="112" height="32" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="386" y="164" text-anchor="middle">U3 TPS22918</text>
+          <text class="svg-sub" x="386" y="177" text-anchor="middle">modem rail switch</text>
+          <path d="M330,166 L318,166" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 3"/>
+          <rect x="282" y="156" width="36" height="20" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="300" y="170" text-anchor="middle" style="fill:var(--ink)">JP2</text>
+          <path d="M282,166 L262,166 L262,330 L208,330" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 3"/>
+          <text class="svg-sub" x="268" y="246">VBAT_RB_SW</text>
+          <text class="svg-sub" x="268" y="262">&asymp;500 mA in TX</text>
+          <!-- IO26 -> U3 ON -->
+          <path d="M400,300 L376,300 L376,182" fill="none" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="370" y="296" text-anchor="end">RB_EN &rarr; U3 ON</text>
+          <text class="svg-sub" x="370" y="226" text-anchor="end">R2 100k &darr; GND</text>
+
+          <!-- ---- RockBLOCK, off-board, and J6 ---- -->
+          <rect x="10" y="300" width="162" height="110" rx="3" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="18" y="316">J6 &#9656; RockBLOCK 9603</text>
+          <text class="svg-sub" x="18" y="330">1 &rarr; pin 8, 3.0&ndash;5.4 V</text>
+          <text class="svg-sub" x="18" y="343">2 GND</text>
+          <text class="svg-sub" x="18" y="356">3 RXD &larr; IO17</text>
+          <text class="svg-sub" x="18" y="369">4 TXD &rarr; IO16</text>
+          <text class="svg-sub" x="18" y="382">5 On/Off &larr; IO14 (v3.D)</text>
+          <text class="svg-sub" x="18" y="395">5 wires &middot; ~500 mA in TX</text>
+          <line x1="172" y1="358" x2="192" y2="358" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <rect x="192" y="322" width="16" height="72" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="200" y="333" text-anchor="middle" style="font-size:7.5px">1</text>
+          <text class="svg-sub" x="200" y="347" text-anchor="middle" style="font-size:7.5px">2</text>
+          <text class="svg-sub" x="200" y="361" text-anchor="middle" style="font-size:7.5px">3</text>
+          <text class="svg-sub" x="200" y="375" text-anchor="middle" style="font-size:7.5px">4</text>
+          <text class="svg-sub" x="200" y="389" text-anchor="middle" style="font-size:7.5px">5</text>
+          <line x1="208" y1="358" x2="400" y2="358" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <line x1="208" y1="372" x2="400" y2="372" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <line x1="208" y1="386" x2="400" y2="386" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="378" y="352" text-anchor="end">UART + On/Off &rarr; J6</text>
+
+          <!-- ---- the MCU socket and module ---- -->
+          <rect x="384" y="210" width="232" height="540" rx="3" fill="none" stroke="var(--ink-3)" stroke-dasharray="4 3"/>
+          <rect x="400" y="220" width="200" height="520" rx="4" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+          <rect x="400" y="220" width="7" height="520" fill="var(--ink-3)" opacity="0.45"/>
+          <rect x="593" y="220" width="7" height="520" fill="var(--ink-3)" opacity="0.45"/>
+          <text class="svg-sub" x="500" y="206" text-anchor="middle">SOCK_FB &mdash; two turned-pin strips</text>
+          <rect x="440" y="232" width="120" height="54" rx="2" fill="var(--surface-2)" stroke="var(--ink-2)"/>
+          <path d="M448,244 l5,-6 l5,6 l5,-6 l5,6 l5,-6 l5,6" fill="none" stroke="var(--ink-2)" stroke-width="1"/>
+          <text class="svg-sub" x="500" y="266" text-anchor="middle" style="fill:var(--ink)">ESP32-WROOM-32E</text>
+          <text class="svg-sub" x="500" y="279" text-anchor="middle">radio &middot; RTC RAM</text>
+          <text class="svg-label" x="500" y="322" text-anchor="middle">FireBeetle 2 ESP32-E</text>
+          <text class="svg-sub" x="500" y="336" text-anchor="middle">plugged, never soldered</text>
+          <text class="svg-sub" x="500" y="350" text-anchor="middle">Low Power Pad cut</text>
+          <text class="svg-sub" x="500" y="364" text-anchor="middle">asleep 23.9 h a day</text>
+          <rect x="486" y="724" width="28" height="12" rx="2" fill="var(--surface-2)" stroke="var(--ink-2)"/>
+          <text class="svg-sub" x="500" y="718" text-anchor="middle">USB-C</text>
+          <text class="svg-sub" x="500" y="766" text-anchor="middle">SOCK_DEVKIT &mdash; the wider pair, soldered on every board, empty on the probes</text>
+
+          <!-- inner pin names, left -->
+          <text class="svg-sub" x="410" y="304" style="font-size:9.5px;fill:var(--ink)">IO26</text>
+          <text class="svg-sub" x="410" y="362" style="font-size:9.5px;fill:var(--ink)">IO17</text>
+          <text class="svg-sub" x="410" y="376" style="font-size:9.5px;fill:var(--ink)">IO16</text>
+          <text class="svg-sub" x="410" y="390" style="font-size:9.5px;fill:var(--ink)">IO14</text>
+          <!-- inner pin names, right -->
+          <text class="svg-sub" x="590" y="250" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">3V3</text>
+          <text class="svg-sub" x="590" y="274" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">GND</text>
+          <text class="svg-sub" x="590" y="300" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">IO25</text>
+          <text class="svg-sub" x="590" y="382" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">IO18</text>
+          <text class="svg-sub" x="590" y="396" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">IO19</text>
+          <text class="svg-sub" x="590" y="474" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">IO21</text>
+          <text class="svg-sub" x="590" y="488" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">IO22</text>
+          <text class="svg-sub" x="590" y="554" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">IO4</text>
+          <text class="svg-sub" x="590" y="624" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">IO13</text>
+          <text class="svg-sub" x="590" y="652" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">IO34</text>
+          <text class="svg-sub" x="590" y="694" text-anchor="end" style="font-size:9.5px;fill:var(--ink)">IO35</text>
+
+          <!-- ---- power into the module ---- -->
+          <path d="M600,246 L660,246 L660,92" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <circle cx="660" cy="92" r="3" fill="var(--accent)"/>
+          <text class="svg-sub" x="620" y="242">3V3</text>
+          <line x1="600" y1="270" x2="640" y2="270" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <path d="M640,270 L640,276 M633,276 L647,276 M636,280 L644,280 M639,284 L641,284" fill="none" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="620" y="266">GND</text>
+
+          <!-- ---- IO25 -> U2 -> QW2 (GPS) ---- -->
+          <line x1="600" y1="296" x2="664" y2="296" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="620" y="292">GPS_EN</text>
+          <text class="svg-sub" x="620" y="326">R1 100k &darr; GND</text>
+          <text class="svg-sub" x="714" y="346" text-anchor="end">3V3_GPS</text>
+          <path d="M700,92 L700,280" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <circle cx="700" cy="92" r="3" fill="var(--accent)"/>
+          <rect x="664" y="280" width="96" height="32" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="712" y="294" text-anchor="middle">U2 TPS22918</text>
+          <text class="svg-sub" x="712" y="307" text-anchor="middle">GPS rail switch</text>
+          <path d="M720,312 L720,364 L762,364" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 3"/>
+          <line x1="600" y1="378" x2="762" y2="378" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <line x1="600" y1="392" x2="762" y2="392" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="620" y="372">SDA1 / SCL1 &mdash; I&sup2;C1</text>
+          <line x1="748" y1="350" x2="762" y2="350" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="746" y="346" text-anchor="end">GND</text>
+          <rect x="762" y="342" width="16" height="58" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="770" y="353" text-anchor="middle" style="font-size:7.5px">1</text>
+          <text class="svg-sub" x="770" y="367" text-anchor="middle" style="font-size:7.5px">2</text>
+          <text class="svg-sub" x="770" y="381" text-anchor="middle" style="font-size:7.5px">3</text>
+          <text class="svg-sub" x="770" y="395" text-anchor="middle" style="font-size:7.5px">4</text>
+          <line x1="778" y1="371" x2="796" y2="371" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <rect x="796" y="338" width="200" height="76" rx="3" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="804" y="354">QW2 &#9656; SAM-M8Q GPS</text>
+          <text class="svg-sub" x="804" y="368">0x42 &middot; I&sup2;C1 &middot; a bus of its own</text>
+          <text class="svg-sub" x="804" y="381">rail live ~2 min/day on LAND,</text>
+          <text class="svg-sub" x="804" y="394">~12 on SEA; off, its pull-ups</text>
+          <text class="svg-sub" x="804" y="407">die with it &mdash; the backfeed fix</text>
+
+          <!-- ---- I2C0 -> QW1 (fuel gauge) ---- -->
+          <line x1="600" y1="470" x2="762" y2="470" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <line x1="600" y1="484" x2="762" y2="484" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="620" y="464">SDA0 / SCL0 &mdash; I&sup2;C0</text>
+          <line x1="748" y1="442" x2="762" y2="442" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="746" y="438" text-anchor="end">GND</text>
+          <line x1="744" y1="456" x2="762" y2="456" stroke="var(--accent)" stroke-width="2.5"/>
+          <text class="svg-sub" x="740" y="452" text-anchor="end">3V3</text>
+          <rect x="762" y="434" width="16" height="58" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="770" y="445" text-anchor="middle" style="font-size:7.5px">1</text>
+          <text class="svg-sub" x="770" y="459" text-anchor="middle" style="font-size:7.5px">2</text>
+          <text class="svg-sub" x="770" y="473" text-anchor="middle" style="font-size:7.5px">3</text>
+          <text class="svg-sub" x="770" y="487" text-anchor="middle" style="font-size:7.5px">4</text>
+          <line x1="778" y1="463" x2="796" y2="463" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <rect x="796" y="430" width="200" height="76" rx="3" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="804" y="446">QW1 &#9656; MAX17048 fuel gauge</text>
+          <text class="svg-sub" x="804" y="460">0x36 &middot; I&sup2;C0 &middot; always on</text>
+          <text class="svg-sub" x="804" y="473">one Qwiic cable: supply + data</text>
+          <text class="svg-sub" x="804" y="486">the pack sits on its JST-PH</text>
+          <text class="svg-sub" x="804" y="499">ports &mdash; see the close-up above</text>
+
+          <!-- ---- IO4 -> J8 (DS18B20) ---- -->
+          <line x1="600" y1="550" x2="762" y2="550" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="620" y="546">OW_DATA</text>
+          <text class="svg-sub" x="620" y="562">R3 4.7 k&Omega; &uarr; 3V3</text>
+          <line x1="748" y1="564" x2="762" y2="564" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="746" y="560" text-anchor="end">GND</text>
+          <line x1="744" y1="578" x2="762" y2="578" stroke="var(--accent)" stroke-width="2.5"/>
+          <text class="svg-sub" x="740" y="574" text-anchor="end">3V3</text>
+          <rect x="762" y="542" width="16" height="44" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="770" y="553" text-anchor="middle" style="font-size:7.5px">1</text>
+          <text class="svg-sub" x="770" y="567" text-anchor="middle" style="font-size:7.5px">2</text>
+          <text class="svg-sub" x="770" y="581" text-anchor="middle" style="font-size:7.5px">3</text>
+          <line x1="778" y1="564" x2="796" y2="564" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <rect x="796" y="538" width="200" height="64" rx="3" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="804" y="554">J8 &#9656; DS18B20 temperature probe</text>
+          <text class="svg-sub" x="804" y="568">1 DATA &middot; 2 GND &middot; 3 3V3</text>
+          <text class="svg-sub" x="804" y="581">1-Wire &middot; through the hull</text>
+          <text class="svg-sub" x="804" y="594">sea on SEA, ground on LAND</text>
+
+          <!-- ---- IO13 / IO34 -> J7 (NTC), R5 -> IO35 -> J9 (leak) ---- -->
+          <line x1="600" y1="620" x2="762" y2="620" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="620" y="616">SENSE_EXC</text>
+          <line x1="600" y1="648" x2="762" y2="648" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="620" y="644">NTC_SENSE</text>
+          <circle cx="720" cy="648" r="2.5" fill="var(--ink-2)"/>
+          <text class="svg-sub" x="750" y="662" text-anchor="end">R4 10k &darr; GND</text>
+          <circle cx="608" cy="620" r="2.5" fill="var(--ink-2)"/>
+          <path d="M608,620 L608,642 A6,6 0 0 1 608,654 L608,690" fill="none" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="620" y="674">R5 100k</text>
+          <line x1="600" y1="690" x2="762" y2="690" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="640" y="686">LEAK_SENSE</text>
+          <circle cx="720" cy="690" r="2.5" fill="var(--ink-2)"/>
+          <text class="svg-sub" x="750" y="704" text-anchor="end">C6 100n &darr; GND</text>
+          <line x1="748" y1="718" x2="762" y2="718" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="746" y="732" text-anchor="end">GND</text>
+          <rect x="762" y="612" width="16" height="44" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="770" y="623" text-anchor="middle" style="font-size:7.5px">1</text>
+          <text class="svg-sub" x="770" y="637" text-anchor="middle" style="font-size:7.5px">&times;</text>
+          <text class="svg-sub" x="770" y="651" text-anchor="middle" style="font-size:7.5px">3</text>
+          <rect x="762" y="682" width="16" height="44" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-sub" x="770" y="693" text-anchor="middle" style="font-size:7.5px">1</text>
+          <text class="svg-sub" x="770" y="707" text-anchor="middle" style="font-size:7.5px">&times;</text>
+          <text class="svg-sub" x="770" y="721" text-anchor="middle" style="font-size:7.5px">3</text>
+          <line x1="778" y1="634" x2="796" y2="634" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <line x1="778" y1="704" x2="796" y2="704" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <rect x="796" y="610" width="200" height="50" rx="3" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="804" y="626">J7 &#9656; NTC #2, 10 k&Omega; at the pack</text>
+          <text class="svg-sub" x="804" y="640">1 excite &middot; 2 empty &middot; 3 sense</text>
+          <text class="svg-sub" x="804" y="653">NTC #1 goes to the charger</text>
+          <rect x="796" y="680" width="200" height="50" rx="3" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="804" y="696">J9 &#9656; leak pads, cavity wall</text>
+          <text class="svg-sub" x="804" y="710">1 sense &middot; 2 empty &middot; 3 GND</text>
+          <text class="svg-sub" x="804" y="723">no bias at rest &middot; IO35 reads</text>
+
+          <!-- ---- SOCK_BARO with the BMP581 in it ---- -->
+          <text class="svg-sub" x="204" y="440">SOCK_BARO &middot; 7-way</text>
+          <rect x="204" y="448" width="174" height="44" rx="2" fill="var(--surface)" stroke="var(--ink)"/>
+          <text class="svg-label" x="291" y="466" text-anchor="middle">Fermion BMP581</text>
+          <text class="svg-sub" x="291" y="480" text-anchor="middle">0x47 &middot; header soldered once</text>
+          <rect x="204" y="494" width="174" height="10" fill="var(--ink-3)" opacity="0.45"/>
+          <text class="svg-sub" x="214" y="518" text-anchor="middle" style="font-size:9px">INT</text>
+          <text class="svg-sub" x="238" y="518" text-anchor="middle" style="font-size:9px">SDO</text>
+          <text class="svg-sub" x="262" y="518" text-anchor="middle" style="font-size:9px">CSB</text>
+          <text class="svg-sub" x="286" y="518" text-anchor="middle" style="font-size:9px;fill:var(--ink)">SDA</text>
+          <text class="svg-sub" x="310" y="518" text-anchor="middle" style="font-size:9px;fill:var(--ink)">SCL</text>
+          <text class="svg-sub" x="334" y="518" text-anchor="middle" style="font-size:9px;fill:var(--ink)">GND</text>
+          <text class="svg-sub" x="358" y="518" text-anchor="middle" style="font-size:9px;fill:var(--ink)">3V3</text>
+          <text class="svg-sub" x="214" y="532" text-anchor="middle" style="font-size:9px">n/c</text>
+          <text class="svg-sub" x="238" y="532" text-anchor="middle" style="font-size:9px">n/c</text>
+          <text class="svg-sub" x="262" y="532" text-anchor="middle" style="font-size:9px">n/c</text>
+          <text class="svg-sub" x="286" y="532" text-anchor="middle" style="font-size:9px">SDA0</text>
+          <text class="svg-sub" x="310" y="532" text-anchor="middle" style="font-size:9px">SCL0</text>
+          <text class="svg-sub" x="334" y="532" text-anchor="middle" style="font-size:9px">GND</text>
+          <text class="svg-sub" x="358" y="532" text-anchor="middle" style="font-size:9px;fill:var(--accent)">3V3</text>
+
+          <!-- ---- the BME280 seat, undecided ---- -->
+          <rect x="204" y="556" width="174" height="62" rx="2" fill="none" stroke="var(--ink-2)" stroke-dasharray="5 3"/>
+          <text class="svg-label" x="291" y="574" text-anchor="middle">BME280 &mdash; seat open</text>
+          <text class="svg-sub" x="291" y="588" text-anchor="middle">0x77 &middot; a header board</text>
+          <text class="svg-sub" x="291" y="601" text-anchor="middle">GND &middot; 3V3 &middot; SDA0 &middot; SCL0</text>
+          <text class="svg-sub" x="291" y="613" text-anchor="middle" style="font-size:9px">&#9888; PROC-17: socket or cable?</text>
+
+          <!-- ---- legend ---- -->
+          <line x1="204" y1="646" x2="234" y2="646" stroke="var(--accent)" stroke-width="2.5"/>
+          <text class="svg-sub" x="242" y="650">power, always on</text>
+          <line x1="204" y1="660" x2="234" y2="660" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 3"/>
+          <text class="svg-sub" x="242" y="664">a switched rail</text>
+          <line x1="204" y1="674" x2="234" y2="674" stroke="var(--ink-2)" stroke-width="1.5"/>
+          <text class="svg-sub" x="242" y="678">logic and data</text>
+          <text class="svg-sub" x="204" y="698">a net name with no wire</text>
+          <text class="svg-sub" x="204" y="712">= the same copper</text>
+        </svg>
+      </div>
+      <figcaption>Two wires in, everything else out. The only thing that <i>arrives</i> on this board is <b>BATT+/GND</b> at J5 &mdash; the solar side never touches it since the combiner moved to the upper shell. From that node the board makes two rails: <b>VBAT</b>, tapped before the polyfuse so F1&rsquo;s resistance never eats the modem&rsquo;s margin, switched by U3 and handed straight to the RockBLOCK; and <b>3V3</b>, through F1, the LDO and JP1, feeding the ESP32, both Qwiic ports, the barometer socket and the temperature probe&rsquo;s lead. The GPS gets its rail from U2 and its bus from IO18/IO19, both its own. Every part with a price is in a socket or on a cable; the soldered parts are two switches, a fuse, a regulator, five resistors and four capacitors.</figcaption>
+    </figure>
+
+    <p class="note"><b>The two jumpers are instruments as much as switches.</b> A shunt on JP1 connects the 3.3 V rail; pull it and the board is dead, which is how the rule &ldquo;never feed 3V3 while USB is plugged in&rdquo; becomes something a tired person cannot get wrong. Put a meter across the same two pins instead of the shunt and it reads the whole board&rsquo;s sleep current without cutting a trace &mdash; every microamp figure in this book is meant to be measured there. JP2 does the same for the modem rail. And the board carries <b>no I&sup2;C pull-up resistors of its own</b>: the breakouts supply them, three sets in parallel on the sensor bus and the GPS&rsquo;s own pair on its bus, which is exactly why switching the GPS rail off works.</p>
+
     <div class="pinmap">
       <p class="pinmap-title">Every part — what powers it, what talks to it</p>
       <div class="frame">
