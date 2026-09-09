@@ -1008,6 +1008,8 @@
           <text class="svg-sub" x="242" y="678">logic and data</text>
           <text class="svg-sub" x="204" y="698">a net name with no wire</text>
           <text class="svg-sub" x="204" y="712">= the same copper</text>
+          <text class="svg-sub" x="204" y="736">a numbered column is a</text>
+          <text class="svg-sub" x="204" y="750">port where a cable leaves</text>
         </svg>
       </div>
       <figcaption>Two wires in, everything else out. The only thing that <i>arrives</i> on this board is <b>BATT+/GND</b> at J5 &mdash; the solar side never touches it since the combiner moved to the upper shell. From that node the board makes two rails: <b>VBAT</b>, tapped before the polyfuse so F1&rsquo;s resistance never eats the modem&rsquo;s margin, switched by U3 and handed straight to the RockBLOCK; and <b>3V3</b>, through F1, the LDO and JP1, feeding the ESP32, both Qwiic ports, the barometer socket and the temperature probe&rsquo;s lead. The GPS gets its rail from U2 and its bus from IO18/IO19, both its own. Every part with a price is in a socket or on a cable; the soldered parts are two switches, a fuse, a regulator, five resistors and four capacitors.</figcaption>
