@@ -35,3 +35,10 @@ The design is not finished, and the page says so where it matters. It marks
 what is owned, what is on order and what is still to buy, and it ends on the
 open gaps. Several joints on the hull have never been pressure-tested; the page
 names them rather than glossing them.
+
+## Licence
+
+[CC BY 4.0](LICENSE). Reuse it, adapt it, publish it, with credit to
+**SouthPing** (<https://southping.org/>) and a link back. Source code in the
+project is Apache-2.0. Manufacturers' datasheets and product photographs
+remain theirs and are not covered by this grant.
